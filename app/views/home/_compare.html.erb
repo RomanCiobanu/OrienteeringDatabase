@@ -1,0 +1,94 @@
+<table class="table table-striped table-bordered table-hover">
+    <thead>
+        <tr class="table-primary">
+            <td></td>
+            <td></td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+                 <%= render partial: '/runners/show', :locals => { :runner => runner_one } %>
+            </td>
+              <td>
+                 <%= render partial: '/runners/show', :locals => { :runner => runner_two } %>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <% if runner_one_wins > runner_two_wins %>
+                <h1 style= "background-color: green" >
+              <% elsif runner_one_wins == runner_two_wins %>
+                <h1 style= "background-color: blue">
+              <% else %>
+                <h1 style= "background-color: red">
+              <% end %>
+                 WINS: <%=  runner_one_wins %> </h1>
+            </td>
+            <td>
+              <% if runner_one_wins < runner_two_wins %>
+                <h1 style= "background-color: green" >
+              <% elsif runner_one_wins == runner_two_wins %>
+                <h1 style= "background-color: blue">
+              <% else %>
+                <h1 style= "background-color: red">
+              <% end %>
+                 WINS: <%=  runner_two_wins %> </h1>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <table>
+                    <thead>
+                        <tr>
+                            <td>Competition</td>
+                            <td>Distance Type </td>
+                            <td> Place</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% runner_one.results.each do |result| %>
+                        <tr>
+                            <td>
+                                <%= result.competition.name %>
+                            </td>
+                            <td>
+                                <%= result.competition.distance_type %>
+                            </td>
+                            <td>
+                                <%=result.place %>
+                            </td>
+                        </tr>
+                        <% end %>
+                    </tbody>
+                </table>
+            </td>
+            <td>
+                <table>
+                    <thead>
+                        <tr>
+                            <td>Competition</td>
+                            <td>Distance Type </td>
+                            <td> Place</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% runner_two.results.each do |result| %>
+                        <tr>
+                            <td>
+                                <%= result.competition.name %>
+                            </td>
+                            <td>
+                                <%= result.competition.distance_type %>
+                            </td>
+                            <td>
+                                <%=result.place %>
+                            </td>
+                        </tr>
+                        <% end %>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+    </tbody>
+</table>

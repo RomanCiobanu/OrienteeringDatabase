@@ -1,0 +1,19 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  date: 2021-09-15
+  location: MyString
+  country: MyString
+  group: MyString
+  type: 
+  rang: 1.5
+
+two:
+  name: MyString
+  date: 2021-09-15
+  location: MyString
+  country: MyString
+  group: MyString
+  type: 
+  rang: 1.5

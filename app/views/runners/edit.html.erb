@@ -1,0 +1,14 @@
+<% if user_signed_in? %>
+<h1>Editing Runner</h1>
+
+<%= render 'form', runner: @runner %>
+<br/>
+
+<%= link_to 'Show', @runner, class: "btn btn-warning btn-sm"%>
+<% else %>
+ <p> You need to sign in to edit club </p>
+<%=link_to 'Sign In', new_user_session_path, class: "btn btn-info btn-sm"%>
+ <%=link_to 'Sign Up', new_user_registration_path, class: "btn btn-success btn-sm" %>
+<% end %>
+
+<%= link_to 'Back', runners_path, class: "btn btn-danger btn-sm"%>

@@ -1,0 +1,38 @@
+<h1 style="text-align:center; color:green">Clubs List</h1>
+
+<table class = "table table-striped table-bordered table-hover">
+  <thead>
+    <tr class = "table-primary">
+      <th>Name</th>
+      <th>Territory</th>
+      <th>Representative</th>
+      <th>Email</th>
+      <th>Phone</th>
+      <th>Runners</th>
+      <th colspan="3">Actions</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @clubs.each do |club| %>
+      <tr>
+        <td><%= club.name %></td>
+        <td><%= club.territory %></td>
+        <td><%= club.representative %></td>
+        <td><%= club.email %></td>
+        <td><%= club.phone %></td>
+        <td><%= club.runners.count %></td>
+        <td><%= link_to 'Show', club, class: "btn btn-warning btn-sm"%></td>
+        <% if user_signed_in? %>
+        <td><%= link_to 'Edit', edit_club_path(club), class: "btn btn-success btn-sm"%></td>
+        <td><%= link_to 'Delete', club, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-danger btn-sm" %></td>
+        <% end %>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+<% if user_signed_in? %>
+<%= link_to 'New Club', new_club_path, class: "btn btn-info" %>
+<% end %>

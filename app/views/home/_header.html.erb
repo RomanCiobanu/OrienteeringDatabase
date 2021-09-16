@@ -1,0 +1,40 @@
+<header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom navbar navbar-light" style="background-color: #e3f2fd;">
+    <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
+        <li>
+            <%=link_to  image_tag("fso", class: "header-logo"), root_path, class: "logo nav-link" %>
+
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Database
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <%=link_to 'Clubs', clubs_path, class: "dropdown-item" %>
+                <%=link_to 'Runners', runners_path, class: "dropdown-item" %>
+            </div>
+        </li>
+        <% if user_signed_in? %>
+        <li class="nav-item">
+            <%=link_to 'Add Club' , new_club_path, class: "nav-link" %>
+        </li>
+         <li class="nav-item">
+            <%=link_to 'Add Runner' , new_runner_path, class: "nav-link" %>
+        </li>
+        <% end %>
+        <li>
+            <%=link_to 'About us', about_path, class: "nav-link" %>
+        </li>
+    </ul>
+      <!--   <form class="form-inline my-2 my-lg-0">
+            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+        </form> -->
+    <div class="col-md-3 text-end">
+        <% if user_signed_in? %>
+        <%=link_to 'Edit Profile', edit_user_registration_path, class: "btn btn-primary" %>
+        <%=link_to 'Sign Out', destroy_user_session_path, method: :delete, class: "btn btn-danger" %>
+        <% else %>
+        <%=link_to 'Sign Up', new_user_registration_path, class: "btn btn-success me-2" %>
+        <%=link_to 'Sign In', new_user_session_path, class: "btn btn-info" %>
+        <% end %>
+    </div>
+</header>

@@ -1,0 +1,10 @@
+<%= form_tag compare_path do %>
+<label for="id">First ID</label>
+<%=select_tag :first_name, options_for_select(@runners.map{ |runner| ["#{runner.name} #{runner.surname}", runner.id] }) %>
+<label for="id">First ID</label>
+<%= select_tag :second_name, options_for_select(@runners.map{ |runner| ["#{runner.name} #{runner.surname}", runner.id] }) %>
+<%= submit_tag "Submit" %>
+<% end %>
+<% if  @runner_one && @runner_two %>
+<%= render 'compare', runner_one: @runner_one, runner_two: @runner_two, runner_one_wins: @runner_one_wins, runner_two_wins: @runner_two_wins  %>
+<% end %>

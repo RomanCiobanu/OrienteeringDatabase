@@ -1,0 +1,30 @@
+<div class="jumbotron">
+    <h1 class="display-4">
+        <%= @club.name %>
+    </h1>
+    <p> <strong>Territory:</strong>
+        <%= @club.territory %>
+    </p>
+    <p>
+        <strong>Representative:</strong>
+        <%= @club.representative %>
+    </p>
+    <hr class="my-4">
+    <p><strong>Email:</strong>
+        <%= @club.email %>
+    </p>
+    <p><strong>Phone:</strong>
+        <%= @club.phone %>
+    </p>
+    <hr class="my-4">
+
+   <%= render partial: '/runners/runners' %>
+
+    <p class="lead">
+        <% if user_signed_in? %>
+        <%= link_to 'Add Runner', new_runner_path, class: "btn btn-info btn-sm" %>
+        <%= link_to 'Edit', edit_club_path(@club), class: "btn btn-success btn-sm" %>
+        <% end %>
+        <%= link_to 'Back', clubs_path, class: "btn btn-danger btn-sm" %>
+    </p>
+</div>

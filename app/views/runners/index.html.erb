@@ -1,0 +1,12 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Runners</h1>
+
+<%= render 'runners', runners: @runners %>
+
+<br>
+
+<% if user_signed_in? %>
+<%= link_to 'New Runner', new_runner_path, class: "btn btn-info" %>
+<% end %>
+

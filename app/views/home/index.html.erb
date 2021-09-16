@@ -1,0 +1,3 @@
+<h1>Welcome to the orienteering database </h1>
+<h1>We have <%=link_to "#{@runners_count} runners", runners_path %> from <%=link_to "#{@clubs_count} clubs", clubs_path %>
+<%= render 'compare', runner_one: @runner_one, runner_two: @runner_two, runner_one_wins: @runner_one_wins, runner_two_wins: @runner_two_wins  %>

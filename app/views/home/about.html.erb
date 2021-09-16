@@ -1,0 +1,114 @@
+<script type="text/javascript">
+function myFunction(x, y, array) {
+    el = "row" + x + "col" + y;
+    element = document.getElementById(el);
+
+    if (window.event.ctrlKey) {
+      if (document.getElementById(el).className == "clicked") {
+        return
+      } else {
+        element.style.background = "green";
+        element.className = "flag";
+      }
+    } else if (element.className == "clicked") {
+        countmines(x, y, array);
+    } else if (array[x][y] == 0) {
+        showVal(el, array[x][y]);
+        openNeighbors(x, y, array);
+    } else { showVal(el, array[x][y]) }
+
+    check_win();
+}
+
+function showVal(el, val) {
+    if (val == 9) {
+        element.style.background = "red";
+        element.classList.add("mine");
+        lose();
+    } else {
+        element = document.getElementById(el);
+        element.style.background = "white";
+        element.className = "clicked";
+        element.innerHTML = val;
+    }
+}
+
+function openNeighbors(x, y, array) {
+
+    check(x - 1, y - 1, array)
+    check(x - 1, y, array)
+    check(x - 1, y + 1, array)
+    check(x, y - 1, array)
+    check(x, y + 1, array)
+    check(x + 1, y - 1, array)
+    check(x + 1, y, array)
+    check(x + 1, y + 1, array)
+}
+
+function check(x, y, array) {
+    if (x >= 0 && x <= 9 && y >= 0 && y <= 9) {
+        el = "row" + x + "col" + y;
+        if (document.getElementById(el).className == "clicked" || document.getElementById(el).className == "flag") {
+            return;
+        }
+        showVal(el, array[x][y]);
+        if (array[x][y] == 0) {
+            openNeighbors(x, y, array);
+        }
+    }
+}
+
+function countmines(x, y, array) {
+
+    count = 0;
+
+    count += checkmine(x - 1, y - 1, array)
+    count += checkmine(x - 1, y, array)
+    count += checkmine(x - 1, y + 1, array)
+    count += checkmine(x, y - 1, array)
+    count += checkmine(x, y + 1, array)
+    count += checkmine(x + 1, y - 1, array)
+    count += checkmine(x + 1, y, array)
+    count += checkmine(x + 1, y + 1, array)
+
+    el = "row" + x + "col" + y;
+    if (document.getElementById(el).innerHTML == count) {
+        openNeighbors(x, y, array);
+    }
+}
+
+function checkmine(x, y, array) {
+    el = "row" + x + "col" + y;
+    element = document.getElementById(el);
+    if (x >= 0 && x <= 9 && y >= 0 && y <= 9 && element.className == "flag") {
+        return 1;
+    } else {
+        return 0;
+    }
+}
+
+function lose() {
+ alert("you lost");
+ location.reload();
+}
+
+function check_win() {
+  if (document.getElementsByClassName("clicked").length == 90) {
+    alert("you won");
+ location.reload();
+  } else {
+    document.getElementById("result").innerHTML = document.getElementsByClassName("flag").length
+  }
+}
+</script>
+<h1>About us</h1>
+<span id="result">0</span><span id="total">/10</span>
+<table class="table-bordered">
+    <% 10.times do |tr_index|%>
+    <tr>
+        <% 10.times do |td_index|%>
+        <td class="closed" onclick="myFunction(<%=tr_index%>, <%=td_index%>, <%=@final%>)" id=<%="row#{tr_index}col#{td_index}" %>></td>
+        <% end %>
+        <%end %>
+</table>
+<div id="aaa">test</div>
