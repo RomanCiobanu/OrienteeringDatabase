@@ -10,8 +10,8 @@ Rails.application.routes.draw do
   get 'home/about', as: "about"
   get 'home/compare', as: "compare"
   get 'home/addcompetition', as: "addcompetition"
-  get 'home/file', as: "file"
+  get 'home/add_competition_file', as: "comp_from_file"
   post 'home/compare', as: "compare_post"
-  post 'home/file', as: "file_post"
+  post 'home/add_competition_file', as: "comp_from_file_post"
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
 end

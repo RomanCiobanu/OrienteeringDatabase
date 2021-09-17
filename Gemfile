@@ -59,3 +59,5 @@ gem 'devise'
 
 gem 'rubyXL'
 
+gem 'roo'
+

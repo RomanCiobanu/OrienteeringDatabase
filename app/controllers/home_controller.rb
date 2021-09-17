@@ -79,46 +79,68 @@ class HomeController < ApplicationController
     end
   end
 
-  def file
+  # def add_runners_file
+  #   if params[:path]
+  #     file = Roo::Spreadsheet.open("/home/romanciobanu/results/#{params[:path]}")
+  #     sheet = file.sheet(0)
+
+  #     @error_names   = []
+  #     @success_names = []
+
+  #     club = sheet.cell(2, 'B')
+
+  #     (4..sheet.last_row).each do |index|
+  #       hash = {
+  #         'name' => sheet.cell(index, 'B'),
+  #         'surname' => sheet.cell(index, 'C'),
+  #         'gender' => sheet.cell(index, 'F'),
+  #         'dob(1i)' => sheet.cell(index, 'D').split('/').last.to_i.to_s,
+  #         'dob(2i)' => sheet.cell(index, 'D').split('/')[1].to_i.to_s,
+  #         'dob(3i)' => sheet.cell(index, 'D').split('/').first.to_i.to_s,
+  #         'category_id' => Category.find_by(name: sheet.cell(index, 'E')).id,
+  #         'club_id' => Club.find_by(name: club).id
+  #       }
+
+  #       @runner = Runner.new(hash)
+
+  #       if @runner.save
+  #         @success_names = []
+  #       else
+  #         @error_name << hash['name']
+  #       end
+  #     end
+  #   end
+  # end
+
+  def add_competition_file
     if params[:path]
-
       file = File.read("/home/romanciobanu/results/#{params[:path]}")
+      html = Nokogiri::HTML(file)
 
-      workbook = RubyXL::Parser.parse "/home/romanciobanu/results/#{params[:path]}"
-      worksheets = workbook.worksheets
-      names = []
-      worksheets.each do |worksheet|
-        @output = "Reading: #{worksheet.sheet_name}"
-        num_rows = 0
-        club = worksheet[1].cells[1].value
-        worksheet.drop(3).each do |row|
-          names << row.cells[2].value
-          num_rows += 1
-        end
-        @output = club
+      competition      = []
+      competition_name = html.css('td.s1')[1].text
+      competition_date = html.at_css('td.s2').text[/\d{2}.\d{2}.\d{4}/]
+      competition_distance_type = html.css('td.s1')[3].text
+
+      @success = []
+      @fail    = []
+
+      html.css('tr').each_with_index do |row, index|
+        next unless row.text.include?('Categoria de vârstă')
+
+        hash                 = {}
+        hash[:name]          = competition_name
+        hash[:date]          = competition_date
+        hash[:location]      = nil
+        hash[:country]       = 'Moldova'
+        hash[:distance_type] = competition_distance_type
+        hash[:index]         = index
+        hash[:group]         = row.at_css('td.s7').text
+        hash[:results]       = []
+
+        competition << hash
+        addcompetition(hash)
       end
-
-      # html = Nokogiri::HTML(file)
-
-      # competition               = []
-      # competition_name          = html.css('td.s1')[1].text
-      # competition_date          = html.at_css('td.s2').text[/\d{2}.\d{2}.\d{4}/]
-      # competition_distance_type = html.css('td.s1')[3].text
-      # @competition_date = competition_date
-      # html.css('tr').each_with_index do |row, index|
-      #   next unless row.text.include?('Categoria de vârstă')
-
-      #   hash                 = {}
-      #   hash[:name]          = competition_name
-      #   hash[:date]          = competition_date
-      #   hash[:location]      = nil
-      #   hash[:country]       = 'Moldova'
-      #   hash[:distance_type] = competition_distance_type
-      #   hash[:index]         = index
-      #   hash[:group]         = row.at_css('td.s7').text
-      #   hash[:results]       = []
-      #   competition << hash
-      # end
 
       # competition << { index: html.css('tr').size }
 
@@ -131,20 +153,20 @@ class HomeController < ApplicationController
       #   end
 
       #   ind = competition.index(competition.detect { |aa| aa[:index] > index }) - 1
-      #   hash = {}
-      #   hash[:name] = row.css('td')[header_hash[:name]].text
-      #   hash[:place] = row.css('td')[header_hash[:place]].text
-      #   # hash[:result] = row.css('td')[header_hash[:result]].text
-      #   time_array = row.css('td')[header_hash[:result]].text.split(/:|\./)
-      #   hash[:time] = time_array.first.to_i * 3600 + time_array[1].to_i * 60 + time_array.last.to_i
+
+      #   hash          = {}
+      #   hash[:name]   = row.css('td')[header_hash[:name]].text
+      #   hash[:place]  = row.css('td')[header_hash[:place]].text
+      #   hash[:result] = row.css('td')[header_hash[:result]].text
+      #   time_array    = row.css('td')[header_hash[:result]].text.split(/:|\./)
+      #   hash[:time]   = time_array.first.to_i * 3600 + time_array[1].to_i * 60 + time_array.last.to_i
       #   competition[ind][:results] << hash
       # end
-      # @competition = competition
-      # addcompetition(competition[-2])
     end
   end
 
   def addcompetition(hash)
+    @hash = hash
     competition = {
       'name' => hash[:name],
       'date(1i)' => hash[:date].split('.').last,
@@ -158,14 +180,10 @@ class HomeController < ApplicationController
 
     @competition = Competition.new(competition)
 
-    respond_to do |format|
-      if @competition.save
-        format.html { redirect_to @competition, notice: 'Competition was successfully created.' }
-        format.json { render :show, status: :created, location: @competition }
-      else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @competition.errors, status: :unprocessable_entity }
-      end
+    if @competition.save
+      @success << hash[:group]
+    else
+      @fail << hash[:group]
     end
   end
 
