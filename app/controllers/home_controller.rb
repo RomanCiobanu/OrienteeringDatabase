@@ -79,38 +79,38 @@ class HomeController < ApplicationController
     end
   end
 
-  # def add_runners_file
-  #   if params[:path]
-  #     file = Roo::Spreadsheet.open("/home/romanciobanu/results/#{params[:path]}")
-  #     sheet = file.sheet(0)
+  def add_runners_file
+    if params[:path]
+      file = Roo::Spreadsheet.open("/home/romanciobanu/results/#{params[:path]}")
+      sheet = file.sheet(0)
 
-  #     @error_names   = []
-  #     @success_names = []
+      @success = []
+      @fail    = []
 
-  #     club = sheet.cell(2, 'B')
+      club = sheet.cell(2, 'B')
 
-  #     (4..sheet.last_row).each do |index|
-  #       hash = {
-  #         'name' => sheet.cell(index, 'B'),
-  #         'surname' => sheet.cell(index, 'C'),
-  #         'gender' => sheet.cell(index, 'F'),
-  #         'dob(1i)' => sheet.cell(index, 'D').split('/').last.to_i.to_s,
-  #         'dob(2i)' => sheet.cell(index, 'D').split('/')[1].to_i.to_s,
-  #         'dob(3i)' => sheet.cell(index, 'D').split('/').first.to_i.to_s,
-  #         'category_id' => Category.find_by(name: sheet.cell(index, 'E')).id,
-  #         'club_id' => Club.find_by(name: club).id
-  #       }
+      (4..sheet.last_row).each do |index|
+        hash = {
+          'name' => sheet.cell(index, 'B'),
+          'surname' => sheet.cell(index, 'C'),
+          'gender' => sheet.cell(index, 'F'),
+          'dob(1i)' => sheet.cell(index, 'D').split('/').last.to_i.to_s,
+          'dob(2i)' => sheet.cell(index, 'D').split('/')[1].to_i.to_s,
+          'dob(3i)' => sheet.cell(index, 'D').split('/').first.to_i.to_s,
+          'category_id' => Category.find_by(name: sheet.cell(index, 'E')).id,
+          'club_id' => Club.find_by(name: club).id
+        }
 
-  #       @runner = Runner.new(hash)
+        @runner = Runner.new(hash)
 
-  #       if @runner.save
-  #         @success_names = []
-  #       else
-  #         @error_name << hash['name']
-  #       end
-  #     end
-  #   end
-  # end
+        if @runner.save
+          @success << hash ['name']
+        else
+          @fail << hash['name']
+        end
+      end
+    end
+  end
 
   def add_competition_file
     if params[:path]
