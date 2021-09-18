@@ -1,4 +1,10 @@
-<table class = "table table-striped table-bordered table-hover">
+<% columns = ["name", "category_call_name", "surname", "gender", "dob", "club_call_name_link"] %>
+
+<%= render partial: '/layouts/index', :locals => { :columns => columns, :categories => @runners  } %>
+
+
+
+<!-- <table class = "table table-striped table-bordered table-hover">
   <thead>
     <tr class="table-primary">
       <th>Name</th>
@@ -20,12 +26,9 @@
         <td><%= runner.dob %></td>
         <td><%= runner.category.name %></td>
         <td><%= link_to runner.club.name, club_path(runner.club) %></td>
-          <td><%= link_to 'Show', runner, class: "btn btn-warning btn-sm"%></td>
-        <% if user_signed_in? %>
-        <td><%= link_to 'Edit', edit_runner_path(runner), class: "btn btn-success btn-sm"%></td>
-        <td><%= link_to 'Delete', runner, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-danger btn-sm" %></td>
-        <% end %>
+          <%= render partial: '/layouts/actions', :locals => { :element => runner } %>
       </tr>
     <% end %>
   </tbody>
 </table>
+ -->

@@ -1,39 +1,11 @@
-<p id="notice"><%= notice %></p>
 
-<h1>Competitions</h1>
+<h1 style="text-align:center; color:green">Competitions</h1>
 
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Date</th>
-      <th>Location</th>
-      <th>Country</th>
-      <th>Group</th>
-      <th>Distance Type</th>
-      <th>Rang</th>
-      <th colspan="3"></th>
-    </tr>
-  </thead>
+<% columns = ["name", "date", "location", "country", "group", "distance_type", "rang"] %>
 
-  <tbody>
-    <% @competitions.each do |competition| %>
-      <tr>
-        <td><%= competition.name %></td>
-        <td><%= competition.date %></td>
-        <td><%= competition.location %></td>
-        <td><%= competition.country %></td>
-        <td><%= competition.group %></td>
-        <td><%= competition.distance_type %></td>
-        <td><%= competition.rang %></td>
-        <td><%= link_to 'Show', competition %></td>
-        <td><%= link_to 'Edit', edit_competition_path(competition) %></td>
-        <td><%= link_to 'Destroy', competition, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
+<%= render partial: '/layouts/index', :locals => { :columns => columns, :categories => @competitions  } %>
 
-<br>
+<% if user_signed_in? %>
+<%= link_to 'New Competition', new_competition_path, class: "btn btn-info" %>
+<% end %>
 
-<%= link_to 'New Competition', new_competition_path %>

@@ -1,36 +1,11 @@
-<p id="notice"><%= notice %></p>
+<h1 style="text-align:center; color:green">Results</h1>
 
-<h1>Results</h1>
+<% columns = ["place", "runner_call_name", "time_edit", "category", "competition_call_name"] %>
 
-<table>
-  <thead>
-    <tr>
-      <th>Place</th>
-      <th>Runner</th>
-      <th>Time</th>
-      <th>Category</th>
-      <th>Competition</th>
-      <th colspan="3"></th>
-    </tr>
-  </thead>
+<%= render partial: '/layouts/index', :locals => { :columns => columns, :categories => @results  } %>
 
-  <tbody>
-    <% @results.each do |result| %>
-      <tr>
-        <td><%= result.place %></td>
-        <td><%= result.runner.name %></td>
-        <td><%= Time.at(result.time ).utc.strftime("%H:%M:%S")%></td>
-        <td><%= result.category %></td>
-        <td><%= result.competition.name %></td>
-        <td><%= link_to 'Show', result %></td>
-        <td><%= link_to 'Edit', edit_result_path(result) %></td>
-        <td><%= link_to 'Destroy', result, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
+<% if user_signed_in? %>
+<%= link_to 'New Result', new_result_path, class: "btn btn-info" %>
+<% end %>
 
-<br>
-
-<%= link_to 'New Result', new_result_path %>
 
