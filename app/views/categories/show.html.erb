@@ -1,19 +1,16 @@
-<p id="notice"><%= notice %></p>
+<% fields = [
+  @category,
+  ["full_name"],
+  [["name", ""]],
+  ["points"]
+]
+%>
+<%= render partial: '/layouts/show', :locals => { :elements => fields} %>
 
-<p>
-  <strong>Name:</strong>
-  <%= @category.name %>
-</p>
 
-<p>
-  <strong>Full name:</strong>
-  <%= @category.full_name %>
-</p>
-
-<p>
-  <strong>Points:</strong>
-  <%= @category.points %>
-</p>
-
-<%= link_to 'Edit', edit_category_path(@category) %> |
-<%= link_to 'Back', categories_path %>
+    <p class="lead">
+        <% if user_signed_in? %>
+        <%= link_to 'Edit', edit_category_path(@category), class: "btn btn-success btn-sm" %>
+        <% end %>
+        <%= link_to 'Back', categories_path, class: "btn btn-danger btn-sm" %>
+    </p>

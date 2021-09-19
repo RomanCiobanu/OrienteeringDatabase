@@ -1,34 +1,3 @@
 <% columns = ["name", "category_call_name", "surname", "gender", "dob", "club_call_name_link"] %>
 
 <%= render partial: '/layouts/index', :locals => { :columns => columns, :categories => @runners  } %>
-
-
-
-<!-- <table class = "table table-striped table-bordered table-hover">
-  <thead>
-    <tr class="table-primary">
-      <th>Name</th>
-      <th>Surname</th>
-      <th>Gender</th>
-      <th>Dob</th>
-      <th>Category</th>
-      <th>Club</th>
-      <th colspan="3"></th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <% @runners.each do |runner| %>
-      <tr>
-        <td><%= runner.name %></td>
-        <td><%= runner.surname %></td>
-        <td><%= runner.gender %></td>
-        <td><%= runner.dob %></td>
-        <td><%= runner.category.name %></td>
-        <td><%= link_to runner.club.name, club_path(runner.club) %></td>
-          <%= render partial: '/layouts/actions', :locals => { :element => runner } %>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
- -->

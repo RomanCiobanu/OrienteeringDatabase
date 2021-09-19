@@ -1,0 +1,30 @@
+<% element = elements.first %>
+
+<div class="jumbotron">
+
+    <h1 class="display-4">
+        <% elements[1].each do |el| %>
+        <%= "#{element.method(el).call} " %>
+     <% end %>
+    </h1>
+<% elements[2].each do |el| %>
+<p> <strong>
+    <%= el.first.titlecase %>:</strong>
+   <%  case el.last
+    when "name" %>
+        <%= element.method(el.first).call.name%>
+     <% when "link" %>
+        <%= link_to element.method(el.first).call.method(el[1]).call, method("#{el.first}_path").call(element.method(el.first).call) %>
+     <% else %>
+        <%= element.method(el.first).call%>
+
+<% end %>
+    </p>
+<% end %>
+    <hr class="my-4">
+    <% elements[3].each do |el| %>
+    <p> <strong><%= el.titlecase %>:</strong>
+        <%= element.method(el).call%>
+    </p>
+<% end %>
+</div>

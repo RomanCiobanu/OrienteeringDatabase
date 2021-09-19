@@ -1,29 +1,15 @@
-<p id="notice"><%= notice %></p>
+<h1 style="text-align:center; color:green">Results</h1>
 
-<p>
-  <strong>Place:</strong>
-  <%= @result.place %>
-</p>
 
-<p>
-  <strong>Runner:</strong>
-  <%= @result.runner %>
-</p>
+<% columns = ["place", "runner_call_name", "time_edit", "category_call_name", "competition_call_name"]
+results = [@result] %>
+<%= render partial: '/layouts/index', :locals => { :columns => columns, :categories => results  } %>
 
-<p>
-  <strong>Time:</strong>
-  <%= @result.time %>
-</p>
 
-<p>
-  <strong>Category:</strong>
-  <%= @result.category %>
-</p>
+<p class="lead">
+        <% if user_signed_in? %>
+        <%= link_to 'Edit', edit_result_path(@result), class: "btn btn-success btn-sm" %>
+        <% end %>
+        <%= link_to 'Back', results_path, class: "btn btn-danger btn-sm" %>
+    </p>
 
-<p>
-  <strong>Competition:</strong>
-  <%= @result.competition %>
-</p>
-
-<%= link_to 'Edit', edit_result_path(@result) %> |
-<%= link_to 'Back', results_path %>

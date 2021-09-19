@@ -1,24 +1,16 @@
-<div class="jumbotron">
-    <h1 class="display-4">
-        <%= @club.name %>
-    </h1>
-    <p> <strong>Territory:</strong>
-        <%= @club.territory %>
-    </p>
-    <p>
-        <strong>Representative:</strong>
-        <%= @club.representative %>
-    </p>
-    <hr class="my-4">
-    <p><strong>Email:</strong>
-        <%= @club.email %>
-    </p>
-    <p><strong>Phone:</strong>
-        <%= @club.phone %>
-    </p>
-    <hr class="my-4">
+<% fields = [
+  @club,
+  ["name"],
+  [["territory"], ["representative"]],
+  ["email", "phone" ]
+]
 
-   <%= render partial: '/runners/runners' %>
+%>
+
+
+<%= render partial: '/layouts/show', :locals => { :elements => fields} %>
+
+<%= render partial: '/runners/runners' %>
 
     <p class="lead">
         <% if user_signed_in? %>
@@ -27,4 +19,3 @@
         <% end %>
         <%= link_to 'Back', clubs_path, class: "btn btn-danger btn-sm" %>
     </p>
-</div>

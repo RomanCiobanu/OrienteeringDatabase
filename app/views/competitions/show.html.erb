@@ -1,39 +1,17 @@
-<p id="notice"><%= notice %></p>
 
-<p>
-  <strong>Name:</strong>
-  <%= @competition.name %>
-</p>
+<% fields = [
+  @competition,
+  ["name"],
+  [["date"], ["location"], ["country"]],
+  ["group", "distance_type", "rang" ]
+]
 
-<p>
-  <strong>Date:</strong>
-  <%= @competition.date %>
-</p>
+%>
+<%= render partial: '/layouts/show', :locals => { :elements => fields} %>
 
-<p>
-  <strong>Location:</strong>
-  <%= @competition.location %>
-</p>
-
-<p>
-  <strong>Country:</strong>
-  <%= @competition.country %>
-</p>
-
-<p>
-  <strong>Group:</strong>
-  <%= @competition.group %>
-</p>
-
-<p>
-  <strong>Distance Type:</strong>
-  <%= @competition.distance_type %>
-</p>
-
-<p>
-  <strong>Rang:</strong>
-  <%= @competition.rang %>
-</p>
-
-<%= link_to 'Edit', edit_competition_path(@competition) %> |
-<%= link_to 'Back', competitions_path %>
+    <p class="lead">
+        <% if user_signed_in? %>
+        <%= link_to 'Edit', edit_competition_path(@competition), class: "btn btn-success btn-sm" %>
+        <% end %>
+        <%= link_to 'Back', competitions_path, class: "btn btn-danger btn-sm" %>
+    </p>

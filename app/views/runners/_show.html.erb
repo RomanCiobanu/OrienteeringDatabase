@@ -1,18 +1,10 @@
-<div class="jumbotron">
-    <h1 class="display-4">
-        <%= runner.name %>  <%= runner.surname %>
-    </h1>
-  <p> <strong>Dob:</strong>
-  <%= runner.dob %>
-</p>
+<% fields = [
+  runner,
+  ["name", "surname"],
+  [["dob"], ["category", "name"] , ["club", "name", "link"] ],
+  []
+]
 
-<p>
-  <strong>Category:</strong>
-  <%= runner.category.name %>
-</p>
+%>
 
-<p>
-  <strong>Club:</strong>
-  <%= link_to runner.club.name, club_path(runner.club) %>
-</p>
-</div>
+<%= render partial: '/layouts/show', :locals => { :elements => fields} %>
