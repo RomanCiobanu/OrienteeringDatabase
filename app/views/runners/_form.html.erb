@@ -1,48 +1,10 @@
-<%= form_with(model: runner) do |form| %>
-  <% if runner.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(runner.errors.count, "error") %> prohibited this runner from being saved:</h2>
+  <% fields = [
+    ["name", "text"],
+    ["surname", "text"],
+    ["gender", ["M", "F"], "select"],
+    ["date", [Date.today.year, Date.today.year - 80], "date"],
+    ["category", @categories,["full_name"], "id"],
+    ["club", @clubs, ["name"], "id"]
 
-      <ul>
-        <% runner.errors.each do |error| %>
-          <li><%= error.full_message %></li>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
-
-  <div class="field form-group">
-    <%= form.label :name %>
-    <%= form.text_field :name, class: "form-control" %>
-  </div>
-
-  <div class="field form-group">
-    <%= form.label :surname %>
-    <%= form.text_field :surname, class: "form-control" %>
-  </div>
-
-  <div class="field form-group">
-    <%= form.label :gender %>
-    <%= form.select :gender, ["M", "F"] %>
-  </div>
-
-  <div class="field form-group">
-    <%= form.label :dob %>
-   <%= form.date_select :dob, start_year: Date.today.year, end_year: Date.today.year - 80, class: "form-control" %>
-  </div>
-
-  <div class="field form-group">
-    <%= form.label :category_id %>
-    <%= form.select :category_id, @categories.map{ |category| ["#{category.full_name}", category.id] } %>
-  </div>
-
-  <div class="field form-group">
-    <%= form.label :club_id%>
-
-    <%= form.select :club_id, @clubs.map{ |club| ["#{club.name}", club.id] } %>
-  </div>
-
-  <div class="actions">
-    <%= form.submit class: "btn btn-success"%>
-  </div>
-<% end %>
+  ]%>
+  <%= render partial: '/layouts/form', :locals => { :elements => fields, :model => runner} %>

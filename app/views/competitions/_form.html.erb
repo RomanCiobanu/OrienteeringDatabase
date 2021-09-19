@@ -1,52 +1,10 @@
-<%= form_with(model: competition) do |form| %>
-  <% if competition.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(competition.errors.count, "error") %> prohibited this competition from being saved:</h2>
-
-      <ul>
-        <% competition.errors.each do |error| %>
-          <li><%= error.full_message %></li>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
-
-  <div class="field">
-    <%= form.label :name %>
-    <%= form.text_field :name %>
-  </div>
-
-  <div class="field">
-    <%= form.label :date %>
-    <%= form.date_select :date %>
-  </div>
-
-  <div class="field">
-    <%= form.label :location %>
-    <%= form.text_field :location %>
-  </div>
-
-  <div class="field">
-    <%= form.label :country %>
-    <%= form.text_field :country %>
-  </div>
-
-  <div class="field">
-    <%= form.label :group %>
-    <%= form.text_field :group %>
-  </div>
-
-  <div class="field">
-    <%= form.label :distance_type %>
-    <%= form.text_field :distance_type %>
-  </div>
-
-  <div class="field">
-    <%= form.label :rang %>
-    <%= form.text_field :rang %>
-  </div>
-
-  <div class="actions">
-    <%= form.submit %>
-  </div>
-<% end %>
+<% fields = [
+  ["name", "text"],
+  ["date", [], "date"],
+  ["location", "text"],
+  ["country", "text"],
+  ["group", "text"],
+  ["distance_type", "text"],
+  ["rang", "text"]
+] %>
+<%= render partial: '/layouts/form', :locals => { :elements => fields, :model => competition} %>

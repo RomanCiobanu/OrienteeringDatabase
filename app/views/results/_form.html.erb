@@ -1,42 +1,8 @@
-<%= form_with(model: result) do |form| %>
-<% if result.errors.any? %>
-<div id="error_explanation">
-    <h2>
-        <%= pluralize(result.errors.count, "error") %> prohibited this result from being saved:</h2>
-    <ul>
-        <% result.errors.each do |error| %>
-        <li>
-            <%= error.full_message %>
-        </li>
-        <% end %>
-    </ul>
-</div>
-<% end %>
-<div class="field">
-    <%= form.label :place %>
-    <%= form.text_field :place %>
-</div>
-<div class="field">
-    <%= form.label :runner_id %>
-    <%= form.select :runner_id, @runners.map{ |runner| ["#{runner.name}", runner.id] } %>
-</div>
-<div class="field">
-    <%= form.label :hours %>
-    <%= form.number_field :hours %>
-    <%= form.label :minutes %>
-    <%= form.number_field :minutes %>
-    <%= form.label :seconds %>
-    <%= form.number_field :seconds %>
-</div>
-<div class="field">
-    <%= form.label :category %>
-    <%= form.text_field :category %>
-</div>
-<div class="field">
-    <%= form.label :competition_id %>
-    <%= form.select :competition_id, @competitions.map{ |competition| ["#{competition.name}", competition.id] } %>
-</div>
-<div class="actions">
-    <%= form.submit %>
-</div>
-<% end %>
+<% fields = [
+    ["place", "number"],
+    ["runner", @runners, ["name", "surname"], "id"],
+    ["duration"],
+    ["category", @categories,["full_name"], "id"],
+    ["competition", @competitions, ["name", "distance_type"], "id"]
+] %>
+<%= render partial: '/layouts/form', :locals => { :elements => fields, :model => result} %>

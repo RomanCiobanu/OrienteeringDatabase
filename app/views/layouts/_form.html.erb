@@ -1,0 +1,47 @@
+<%= form_with(model: model) do |form| %>
+<% if model.errors.any? %>
+<div id="error_explanation">
+    <h2>
+        <%= pluralize(model.errors.count, "error") %> prohibited this model from being saved:</h2>
+    <ul>
+        <% model.errors.each do |error| %>
+        <li>
+            <%= error.full_message %>
+        </li>
+        <% end %>
+    </ul>
+</div>
+<% end %>
+<% elements.each do |el| %>
+<div class="field form-group">
+    <%= form.label el.first.to_sym, class: "form-control" %>
+    <% case el.last
+    when "date" %>
+    <%= form.date_select el.first.to_sym, start_year: el[1].first, end_year: el[1].last, class: "form-control" %>
+    <% when "id" %>
+    <% array = el[1].map do |element|
+        string = ""
+        el[2].each do |meth_name|
+         string += "#{element.method(meth_name).call} "
+        end
+        [string[0..-2], element.id]
+    end %>
+    <%= form.select "#{el.first}_id".to_sym, array, class: "form-control" %>
+    <% when "duration" %>
+    <%= form.label :hours %>
+    <%= form.number_field :hours %>
+    <%= form.label :minutes %>
+    <%= form.number_field :minutes %>
+    <%= form.label :seconds %>
+    <%= form.number_field :seconds %>
+    <% when "select" %>
+        <%= form.select el.first.to_sym, el[1] %>
+    <% else %>
+    <%= form.method("#{el.last}_field").call el.first.to_sym, class: "form-control"  %>
+    <% end %>
+</div>
+<% end %>
+<div class="actions">
+    <%= form.submit class: "btn btn-success"%>
+</div>
+<% end %>

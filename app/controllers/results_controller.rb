@@ -15,6 +15,7 @@ class ResultsController < ApplicationController
     @result = Result.new
     @competitions = Competition.all
     @runners = Runner.all
+    @categories = Category.all
   end
 
   # GET /results/1/edit
@@ -25,6 +26,7 @@ class ResultsController < ApplicationController
   def create
     params = result_params
     params[:time] = params[:hours].to_i * 3600 + params[:minutes].to_i * 60 + params[:seconds].to_i
+
     @result = Result.new(params.except(:hours, :minutes, :seconds))
 
     respond_to do |format|
@@ -69,10 +71,11 @@ class ResultsController < ApplicationController
       @result = Result.find(params[:id])
       @competitions = Competition.all
       @runners = Runner.all
+      @categories = Category.all
     end
 
     # Only allow a list of trusted parameters through.
     def result_params
-      params.require(:result).permit(:place, :runner_id, :hours, :minutes, :seconds, :category, :competition_id)
+      params.require(:result).permit(:place, :runner_id, :hours, :minutes, :seconds, :category_id, :competition_id)
     end
 end

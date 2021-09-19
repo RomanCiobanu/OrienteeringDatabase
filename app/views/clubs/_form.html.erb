@@ -1,42 +1,8 @@
-<%= form_with(model: club) do |form| %>
-  <% if club.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(club.errors.count, "error") %> prohibited this club from being saved:</h2>
-
-      <ul>
-        <% club.errors.each do |error| %>
-          <li><%= error.full_message %></li>
-        <% end %>
-      </ul>z
-    </div>
-  <% end %>
-
-  <div class="field form-group">
-    <%= form.label :name %>
-    <%= form.text_field :name, class: "form-control" %>
-  </div>
-
-  <div class="field form-group">
-    <%= form.label :territory %>
-    <%= form.text_field :territory, class: "form-control" %>
-  </div>
-
-  <div class="field form-group">
-    <%= form.label :representative %>
-    <%= form.text_field :representative, class: "form-control" %>
-  </div>
-
-  <div class="field form-group">
-    <%= form.label :email %>
-    <%= form.text_field :email, class: "form-control" %>
-  </div>
-
-  <div class="field form-group">
-    <%= form.label :phone %>
-    <%= form.text_field :phone, class: "form-control" %>
-  </div>
-
-  <div class="actions">
-    <%= form.submit class: "btn btn-success"%>
-  </div>
-<% end %>
+<% fields = [
+  ["name", "text"],
+  ["territory", "text"],
+  ["representative", "text"],
+  ["email", "text"],
+  ["phone", "text"]
+] %>
+<%= render partial: '/layouts/form', :locals => { :elements => fields, :model => club} %>
