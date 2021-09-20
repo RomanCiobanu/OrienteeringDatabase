@@ -160,7 +160,7 @@ class HomeController < ApplicationController
         ind = competition.index(competition.detect { |aa| aa[:index] > index }) - 1
 
         club = add_club(row.css('td')[header_hash[:club]].text)
-        # runner = add_runner(row.css('td')[header_hash[:name]].text, club)
+        runner = add_runner(row.css('td')[header_hash[:name]].text, club)
 
         hash          = {}
         hash[:name]   = row.css('td')[header_hash[:name]].text
@@ -234,11 +234,13 @@ class HomeController < ApplicationController
     runner_id = Runner.find_by(name: name, surname: surname)
     return runner_id if runner_id
 
-    new_runner = Runner.new({name: name, surname: surname, club: club})
-        if new_runner.save
-      @new_runner << runner
+    club_id = club.id if club
+
+    new_runner = Runner.new({ name: name, surname: surname, club_id: club_id, category_id: 11 })
+    if new_runner.save
+      @success_runner << new_runner
     else
-      @new_runner << runner
+      @fail_runner << new_runner
     end
   end
 end
