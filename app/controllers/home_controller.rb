@@ -53,8 +53,8 @@ class HomeController < ApplicationController
   end
 
   def show_wins(one, two)
-    @runner_one = Runner.find_by(id: one)
-    @runner_two = Runner.find_by(id: two)
+    @runner_one = Runner.find(one)
+    @runner_two = Runner.find(two)
 
     @runner_one_wins = 0
     @runner_two_wins = 0
@@ -124,6 +124,11 @@ class HomeController < ApplicationController
 
       @success = []
       @fail    = []
+      @success_club = []
+      @fail_club    = []
+      @success_runner = []
+      @fail_runner    = []
+      clubs = []
 
       html.css('tr').each_with_index do |row, index|
         next unless row.text.include?('Categoria de vârstă')
@@ -139,29 +144,32 @@ class HomeController < ApplicationController
         hash[:results]       = []
 
         competition << hash
-        addcompetition(hash)
+        # addcompetition(hash)
       end
 
-      # competition << { index: html.css('tr').size }
+      competition << { index: html.css('tr').size }
 
-      # headers     = html.at_css("tr[style='height:48px']")
-      # header_hash = parse_headers(headers)
+      headers     = html.at_css("tr[style='height:48px']")
+      header_hash = parse_headers(headers)
 
-      # html.css('tr').each_with_index do |row, index|
-      #   unless row.attribute('style').value == 'height:16px' || (row.attribute('style').value == 'height:15px' && row.css('td').size == headers.css('td').size)
-      #     next
-      #   end
+      html.css('tr').each_with_index do |row, index|
+        unless row.attribute('style').value == 'height:16px' || (row.attribute('style').value == 'height:15px' && row.css('td').size == headers.css('td').size)
+          next
+        end
 
-      #   ind = competition.index(competition.detect { |aa| aa[:index] > index }) - 1
+        ind = competition.index(competition.detect { |aa| aa[:index] > index }) - 1
 
-      #   hash          = {}
-      #   hash[:name]   = row.css('td')[header_hash[:name]].text
-      #   hash[:place]  = row.css('td')[header_hash[:place]].text
-      #   hash[:result] = row.css('td')[header_hash[:result]].text
-      #   time_array    = row.css('td')[header_hash[:result]].text.split(/:|\./)
-      #   hash[:time]   = time_array.first.to_i * 3600 + time_array[1].to_i * 60 + time_array.last.to_i
-      #   competition[ind][:results] << hash
-      # end
+        club = add_club(row.css('td')[header_hash[:club]].text)
+        # runner = add_runner(row.css('td')[header_hash[:name]].text, club)
+
+        hash          = {}
+        hash[:name]   = row.css('td')[header_hash[:name]].text
+        hash[:place]  = row.css('td')[header_hash[:place]].text
+        hash[:result] = row.css('td')[header_hash[:result]].text
+        time_array    = row.css('td')[header_hash[:result]].text.split(/:|\./)
+        hash[:time]   = time_array.first.to_i * 3600 + time_array[1].to_i * 60 + time_array.last.to_i
+        competition[ind][:results] << hash
+      end
     end
   end
 
@@ -197,8 +205,40 @@ class HomeController < ApplicationController
         header_hash[:name] = index
       when /Result/
         header_hash[:result] = index
+      when /Echipa/
+        header_hash[:club] = index
       end
     end
     header_hash
+  end
+
+  def add_club(club)
+    return if club.blank?
+
+    club_id = Club.find_by(name: club)
+
+    return club_id if club_id
+
+    new_club = Club.new({ name: club })
+    if new_club.save
+      @success_club << club
+    else
+      @fail_club << club
+    end
+
+    new_club
+  end
+
+  def add_runner(runner, club)
+    name, surname = runner.split
+    runner_id = Runner.find_by(name: name, surname: surname)
+    return runner_id if runner_id
+
+    new_runner = Runner.new({name: name, surname: surname, club: club})
+        if new_runner.save
+      @new_runner << runner
+    else
+      @new_runner << runner
+    end
   end
 end

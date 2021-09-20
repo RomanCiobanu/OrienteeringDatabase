@@ -1,3 +1,4 @@
+<% if @index_array.first %>
 <table class="table table-striped table-bordered table-hover">
     <thead>
         <tr class="table-primary">
@@ -14,11 +15,12 @@
         <tr>
             <% row.drop(1).each do |column| %>
             <td>
-            <%if column.last == 'link'%>
-            <%= link_to column.second, method("#{column.first}_path").call(row.first) %> </td>
+                <%if column.last == 'link'%>
+                <%= link_to column.second, method("#{column.first}_path").call(row.first) %>
+            </td>
             <% else %>
-
-            <%= column.last %> </td>
+            <%= column.last %>
+            </td>
             <% end %>
             <% end %>
             <%= render partial: '/layouts/actions', :locals => { :element => row.first } %>
@@ -26,4 +28,5 @@
         <% end %>
     </tbody>
 </table>
+<% end %>
 <br>
