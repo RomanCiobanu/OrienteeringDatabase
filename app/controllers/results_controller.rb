@@ -1,14 +1,23 @@
 class ResultsController < ApplicationController
-  before_action :set_result, only: %i[ show edit update destroy ]
+  before_action :set_result, only: %i[show edit update destroy]
 
   # GET /results or /results.json
   def index
     @results = Result.all
+    @index_array = @results.map do |result|
+      [
+        result,
+        ['Place', result.place],
+        ['Runner', "#{result.runner.name} #{result.runner. surname}"],
+        ['Time', Time.at(result.time).utc.strftime('%H:%M:%S')],
+        ['Category', result.category.name],
+        ['Competition', result.competition.name]
+      ]
+    end
   end
 
   # GET /results/1 or /results/1.json
-  def show
-  end
+  def show; end
 
   # GET /results/new
   def new
@@ -19,8 +28,7 @@ class ResultsController < ApplicationController
   end
 
   # GET /results/1/edit
-  def edit
-  end
+  def edit; end
 
   # POST /results or /results.json
   def create
@@ -31,7 +39,7 @@ class ResultsController < ApplicationController
 
     respond_to do |format|
       if @result.save
-        format.html { redirect_to @result, notice: "Result was successfully created." }
+        format.html { redirect_to @result, notice: 'Result was successfully created.' }
         format.json { render :show, status: :created, location: @result }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -47,7 +55,7 @@ class ResultsController < ApplicationController
 
     respond_to do |format|
       if @result.update(params.except(:hours, :minutes, :seconds))
-        format.html { redirect_to @result, notice: "Result was successfully updated." }
+        format.html { redirect_to @result, notice: 'Result was successfully updated.' }
         format.json { render :show, status: :ok, location: @result }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -60,22 +68,23 @@ class ResultsController < ApplicationController
   def destroy
     @result.destroy
     respond_to do |format|
-      format.html { redirect_to results_url, notice: "Result was successfully destroyed." }
+      format.html { redirect_to results_url, notice: 'Result was successfully destroyed.' }
       format.json { head :no_content }
     end
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_result
-      @result = Result.find(params[:id])
-      @competitions = Competition.all
-      @runners = Runner.all
-      @categories = Category.all
-    end
 
-    # Only allow a list of trusted parameters through.
-    def result_params
-      params.require(:result).permit(:place, :runner_id, :hours, :minutes, :seconds, :category_id, :competition_id)
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_result
+    @result = Result.find(params[:id])
+    @competitions = Competition.all
+    @runners = Runner.all
+    @categories = Category.all
+  end
+
+  # Only allow a list of trusted parameters through.
+  def result_params
+    params.require(:result).permit(:place, :runner_id, :hours, :minutes, :seconds, :category_id, :competition_id)
+  end
 end

@@ -1,15 +1,25 @@
 class CompetitionsController < ApplicationController
-  before_action :set_competition, only: %i[ show edit update destroy ]
+  before_action :set_competition, only: %i[show edit update destroy]
 
   # GET /competitions or /competitions.json
   def index
     @competitions = Competition.all
+    @index_array = @competitions.map do |competition|
+      [
+        competition,
+        ['Name', competition.name],
+        ['Date', competition.date],
+        ['Location', competition.location],
+        ['Country', competition.country],
+        ['Group', competition.group],
+        ['Distance Type', competition.distance_type],
+        ['Rang', competition.rang]
+      ]
+    end
   end
 
   # GET /competitions/1 or /competitions/1.json
-  def show
-    @competition.rang = @competition.results.map { |result| result.runner.category.points }.sum
-  end
+  def show; end
 
   # GET /competitions/new
   def new
@@ -17,19 +27,18 @@ class CompetitionsController < ApplicationController
   end
 
   # GET /competitions/1/edit
-  def edit
-  end
+  def edit; end
 
   # POST /competitions or /competitions.json
   def create
-   params = competition_params
-    params[:name] = competition_params
+    params = competition_params
+    params[:rang] = competition_params[:result].map { |result| result.runner.category.points }.sum
 
     @competition = Competition.new(params)
 
     respond_to do |format|
       if @competition.save
-        format.html { redirect_to @competition, notice: "Competition was successfully created." }
+        format.html { redirect_to @competition, notice: 'Competition was successfully created.' }
         format.json { render :show, status: :created, location: @competition }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -42,7 +51,7 @@ class CompetitionsController < ApplicationController
   def update
     respond_to do |format|
       if @competition.update(competition_params)
-        format.html { redirect_to @competition, notice: "Competition was successfully updated." }
+        format.html { redirect_to @competition, notice: 'Competition was successfully updated.' }
         format.json { render :show, status: :ok, location: @competition }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -55,19 +64,20 @@ class CompetitionsController < ApplicationController
   def destroy
     @competition.destroy
     respond_to do |format|
-      format.html { redirect_to competitions_url, notice: "Competition was successfully destroyed." }
+      format.html { redirect_to competitions_url, notice: 'Competition was successfully destroyed.' }
       format.json { head :no_content }
     end
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_competition
-      @competition = Competition.find(params[:id])
-    end
 
-    # Only allow a list of trusted parameters through.
-    def competition_params
-      params.require(:competition).permit(:name, :date, :location, :country, :group, :distance_type, :rang)
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_competition
+    @competition = Competition.find(params[:id])
+  end
+
+  # Only allow a list of trusted parameters through.
+  def competition_params
+    params.require(:competition).permit(:name, :date, :location, :country, :group, :distance_type, :rang)
+  end
 end

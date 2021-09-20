@@ -1,9 +1,6 @@
 <h1 style="text-align:center; color:green">Clubs List</h1>
 
-<% columns = ["name", "territory", "representative", "email", "phone", "runners_count"] %>
-
-<%= render partial: '/layouts/index', :locals => { :columns => columns, :categories => @clubs  } %>
-
+<%= render partial: '/layouts/index'  %>
 <br>
 <% if user_signed_in? %>
 <%= link_to 'New Club', new_club_path, class: "btn btn-info" %>

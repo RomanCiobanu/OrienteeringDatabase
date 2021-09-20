@@ -1,9 +1,9 @@
 
 <h1 style="text-align:center; color:green">Competitions</h1>
 
-<% columns = ["name", "date", "location", "country", "group", "distance_type", "rang"] %>
 
-<%= render partial: '/layouts/index', :locals => { :columns => columns, :categories => @competitions  } %>
+<%= render partial: '/layouts/index'%>
+
 
 <% if user_signed_in? %>
 <%= link_to 'New Competition', new_competition_path, class: "btn btn-info" %>

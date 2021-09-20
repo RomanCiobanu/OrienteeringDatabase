@@ -1,8 +1,6 @@
 <h1 style="text-align:center; color:green">Results</h1>
 
-<% columns = ["place", "runner_call_name", "time_edit", "category_call_name", "competition_call_name"] %>
-
-<%= render partial: '/layouts/index', :locals => { :columns => columns, :categories => @results  } %>
+<%= render partial: '/layouts/index'  %>
 
 <% if user_signed_in? %>
 <%= link_to 'New Result', new_result_path, class: "btn btn-info" %>

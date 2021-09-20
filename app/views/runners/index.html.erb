@@ -1,10 +1,9 @@
 <h1 style="text-align:center; color:green">Runners</h1>
 
-<%= render 'runners', runners: @runners %>
+<%= render partial: '/layouts/index'%>
 
 <br>
 
 <% if user_signed_in? %>
-<%= link_to 'New Runner', new_runner_path, class: "btn btn-info" %>
+<%= link_to('New Runner', new_runner_path, class: "btn btn-info") %>
 <% end %>
-

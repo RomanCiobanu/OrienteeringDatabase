@@ -1,15 +1,14 @@
 class ClubsController < ApplicationController
-  before_action :set_club, only: %i[ show edit update destroy ]
+  before_action :set_club, only: %i[show edit update destroy]
 
   # GET /clubs or /clubs.json
   def index
     @clubs = Club.all
+    @index_array = index_array
   end
 
   # GET /clubs/1 or /clubs/1.json
-  def show
-    @runners = @club.runners
-  end
+  def show; end
 
   # GET /clubs/new
   def new
@@ -17,8 +16,7 @@ class ClubsController < ApplicationController
   end
 
   # GET /clubs/1/edit
-  def edit
-  end
+  def edit; end
 
   # POST /clubs or /clubs.json
   def create
@@ -26,7 +24,7 @@ class ClubsController < ApplicationController
 
     respond_to do |format|
       if @club.save
-        format.html { redirect_to @club, notice: "Club was successfully created." }
+        format.html { redirect_to @club, notice: 'Club was successfully created.' }
         format.json { render :show, status: :created, location: @club }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -39,7 +37,7 @@ class ClubsController < ApplicationController
   def update
     respond_to do |format|
       if @club.update(club_params)
-        format.html { redirect_to @club, notice: "Club was successfully updated." }
+        format.html { redirect_to @club, notice: 'Club was successfully updated.' }
         format.json { render :show, status: :ok, location: @club }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -52,19 +50,36 @@ class ClubsController < ApplicationController
   def destroy
     @club.destroy
     respond_to do |format|
-      format.html { redirect_to clubs_url, notice: "Club was successfully destroyed." }
+      format.html { redirect_to clubs_url, notice: 'Club was successfully destroyed.' }
       format.json { head :no_content }
     end
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_club
-      @club = Club.find(params[:id])
-    end
 
-    # Only allow a list of trusted parameters through.
-    def club_params
-      params.require(:club).permit(:name, :territory, :representative, :email, :phone)
+  # Use callbacks to share common setup or constraints between actions.
+  def set_club
+    @club = Club.find(params[:id])
+    @runners = @club.runners
+    @index_array = runners_index_array
+  end
+
+  # Only allow a list of trusted parameters through.
+  def club_params
+    params.require(:club).permit(:name, :territory, :representative, :email, :phone)
+  end
+
+  def index_array
+    @clubs.map do |club|
+      [
+        club,
+        ['Name', club.name],
+        ['Territory', club.territory],
+        ['Representative', club.representative],
+        ['Email', club.email],
+        ['Phone', club.phone],
+        ['Runners', club.runners.count]
+      ]
     end
+  end
 end

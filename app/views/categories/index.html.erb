@@ -1,8 +1,6 @@
 <h1 style="text-align:center; color:green">Categories</h1>
 
-<% columns = ["name", "full_name", "points"] %>
-
-<%= render partial: '/layouts/index', :locals => { :columns => columns, :categories => @categories  } %>
+<%= render partial: '/layouts/index'  %>
 
 <% if user_signed_in? %>
 <%= link_to 'New Category', new_category_path, class: "btn btn-info" %>

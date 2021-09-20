@@ -1,38 +1,27 @@
 <table class="table table-striped table-bordered table-hover">
     <thead>
         <tr class="table-primary">
-            <% columns.each do |column| %>
+            <% @index_array.first.drop(1).each do |column| %>
             <th>
-                <%= column.gsub("_count", "").gsub("_call_name", "").gsub("_edit", "").gsub("_", " ").titleize %>
+                <%= column.first.titlecase %>
             </th>
             <% end %>
             <th colspan="3">Actions</th>
         </tr>
     </thead>
     <tbody>
-        <% categories.each do |category| %>
+        <% @index_array.each do |row| %>
         <tr>
-            <% columns.each do |column| %>
+            <% row.drop(1).each do |column| %>
             <td>
-                <% case column %>
-                <% when /_call_name_link/
-                method_name = column.gsub("_call_name_link", "") %>
-                <%= link_to category.method(method_name).call.name, method("#{method_name}_path").call(category.method(method_name).call) %>
-                <% when /_count/
-            method_name = column.gsub("_count", "") %>
-                <%= category.method(method_name).call.count %>
-                <% when /_call_name/
-            method_name = column.gsub("_call_name", "") %>
-                <%= category.method(method_name).call.name %>
-                <% when /time_edit/
-            method_name = column.gsub("_edit", "") %>
-                <%= Time.at(category.method(method_name).call).utc.strftime("%H:%M:%S") %>
-                <% else %>
-                <%= category.method(column).call %>
-                <% end %>
-            </td>
+            <%if column.last == 'link'%>
+            <%= link_to column.second, method("#{column.first}_path").call(row.first) %> </td>
+            <% else %>
+
+            <%= column.last %> </td>
             <% end %>
-            <%= render partial: '/layouts/actions', :locals => { :element => category } %>
+            <% end %>
+            <%= render partial: '/layouts/actions', :locals => { :element => row.first } %>
         </tr>
         <% end %>
     </tbody>
