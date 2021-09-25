@@ -4,16 +4,7 @@ class ResultsController < ApplicationController
   # GET /results or /results.json
   def index
     @results = Result.all
-    @index_array = @results.map do |result|
-      [
-        result,
-        ['Place', result.place],
-        ['Runner', "#{result.runner.name} #{result.runner. surname}"],
-        ['Time', Time.at(result.time).utc.strftime('%H:%M:%S')],
-        ['Category', result.category.name],
-        ['Competition', result.competition.name]
-      ]
-    end
+    @index_array = result_index_array(@results)
   end
 
   # GET /results/1 or /results/1.json
@@ -78,6 +69,7 @@ class ResultsController < ApplicationController
   # Use callbacks to share common setup or constraints between actions.
   def set_result
     @result = Result.find(params[:id])
+    @index_array = result_index_array([@result])
     @competitions = Competition.all
     @runners = Runner.all
     @categories = Category.all

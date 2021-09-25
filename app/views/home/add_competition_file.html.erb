@@ -5,9 +5,14 @@
 <%= file_field_tag :path %>
 <%= submit_tag "Submit" %>
 <% end %>
-<% if @success || @fail%>
+Competitions
+<p>success: <%= @success_competition %></p>
+<p>fail: <%= @fail_cometition %></p>
+Runners
 <p>success: <%= @success_runner %></p>
 <p>fail: <%= @fail_runner %></p>
-<% end %>
-
+Results
+<p>success: <%= @success_result %></p>
+<p>fail: <%= @fail_result %></p>
+<%=  @hash_result %>
 

@@ -1,7 +1,7 @@
   <% fields = [
     ["name", "text"],
     ["surname", "text"],
-    ["gender", ["M", "F"], "select"],
+    ["gender", ["M", "W"], "select"],
     ["date", [Date.today.year, Date.today.year - 80], "date"],
     ["category", @categories,["full_name"], "id"],
     ["club", @clubs, ["name"], "id"]

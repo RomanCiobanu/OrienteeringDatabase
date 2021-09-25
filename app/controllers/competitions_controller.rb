@@ -74,6 +74,7 @@ class CompetitionsController < ApplicationController
   # Use callbacks to share common setup or constraints between actions.
   def set_competition
     @competition = Competition.find(params[:id])
+    @index_array = result_index_array(@competition.results)
   end
 
   # Only allow a list of trusted parameters through.

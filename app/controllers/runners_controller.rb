@@ -5,7 +5,7 @@ class RunnersController < ApplicationController
   def index
     @runners = Runner.all
 
-    @index_array = runners_index_array
+    @index_array = runners_index_array(@runners)
   end
 
   # GET /runners/1 or /runners/1.json
@@ -68,6 +68,7 @@ class RunnersController < ApplicationController
     @runner = Runner.find(params[:id])
     @clubs = Club.all
     @categories = Category.all
+    @index_array = result_index_array(@runner.results)
   end
 
   # Only allow a list of trusted parameters through.

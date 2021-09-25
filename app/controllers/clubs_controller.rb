@@ -60,8 +60,7 @@ class ClubsController < ApplicationController
   # Use callbacks to share common setup or constraints between actions.
   def set_club
     @club = Club.find(params[:id])
-    @runners = @club.runners
-    @index_array = runners_index_array
+    @index_array = runners_index_array(@club.runners)
   end
 
   # Only allow a list of trusted parameters through.
