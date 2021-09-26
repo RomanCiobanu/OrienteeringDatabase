@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_09_19_050622) do
+ActiveRecord::Schema.define(version: 2021_09_26_164304) do
 
   create_table "categories", force: :cascade do |t|
     t.string "name"
@@ -44,9 +44,8 @@ ActiveRecord::Schema.define(version: 2021_09_19_050622) do
 
   create_table "results", force: :cascade do |t|
     t.string "place"
-    t.string "integer"
     t.integer "runner_id"
-    t.integer "time"
+    t.integer "time", default: 0
     t.integer "category_id"
     t.integer "competition_id"
     t.datetime "created_at", precision: 6, null: false
@@ -60,8 +59,8 @@ ActiveRecord::Schema.define(version: 2021_09_19_050622) do
     t.string "name"
     t.string "surname"
     t.date "dob"
-    t.integer "category_id"
-    t.integer "club_id"
+    t.integer "category_id", default: 11
+    t.integer "club_id", default: 48
     t.string "gender"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false

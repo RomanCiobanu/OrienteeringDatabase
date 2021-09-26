@@ -80,117 +80,153 @@ class HomeController < ApplicationController
   end
 
   def add_runners_file
-    if params[:path]
-      file = Roo::Spreadsheet.open("/home/romanciobanu/results/#{params[:path]}")
-      sheet = file.sheet(0)
+    return unless params[:path]
 
-      @success = []
-      @fail    = []
+    file = Roo::Spreadsheet.open("/home/romanciobanu/results/#{params[:path]}")
+    sheet = file.sheet(0)
 
-      club = sheet.cell(2, 'B')
+    @success_competition = []
+    @fail_competition    = []
+    @success_club        = []
+    @fail_club           = []
+    @success_runner      = []
+    @fail_runner         = []
+    @success_result      = []
+    @fail_result         = []
 
-      (4..sheet.last_row).each do |index|
-        hash = {
-          'name' => sheet.cell(index, 'B'),
-          'surname' => sheet.cell(index, 'C'),
-          'gender' => sheet.cell(index, 'F'),
-          'dob(1i)' => sheet.cell(index, 'D').split('/').last.to_i.to_s,
-          'dob(2i)' => sheet.cell(index, 'D').split('/')[1].to_i.to_s,
-          'dob(3i)' => sheet.cell(index, 'D').split('/').first.to_i.to_s,
-          'category_id' => Category.find_by(name: sheet.cell(index, 'E')).id,
-          'club_id' => Club.find_by(name: club).id
-        }
+    club_data = {
+      name: sheet.cell(2, 'B'),
+      territory: sheet.cell(2, 'C'),
+      representative: sheet.cell(2, 'D'),
+      email: sheet.cell(2, 'F'),
+      phone: sheet.cell(2, 'H')
+    }.compact
 
-        @runner = Runner.new(hash)
+    club = add_club(club_data)
 
-        if @runner.save
-          @success << hash ['name']
-        else
-          @fail << hash['name']
-        end
+    (5..sheet.last_row).each do |index|
+      runner_hash = {
+        'name' => sheet.cell(index, 'B'),
+        'surname' => sheet.cell(index, 'C'),
+        'gender' => sheet.cell(index, 'F'),
+        'dob(1i)' => sheet.cell(index, 'D').split('.').last.to_i.to_s,
+        'dob(2i)' => sheet.cell(index, 'D').split('.')[1].to_i.to_s,
+        'dob(3i)' => sheet.cell(index, 'D').split('.').first.to_i.to_s,
+        # 'category_id' => Category.find_by(name: sheet.cell(index, 'E')).id || 48,
+        'club_id' => club.id || 11
+      }.compact
+
+      runner = add_runner_test(runner_hash)
+
+      competition_hash = {
+        name: sheet.cell(index, 'I'),
+        date: sheet.cell(index, 'H'),
+        location: sheet.cell(index, 'L'),
+        country: sheet.cell(index, 'M'),
+        distance_type: sheet.cell(index, 'K'),
+        group: sheet.cell(index, 'J')
+      }
+      competition = add_competition(competition_hash)
+
+      category_id = detect_category({ name: sheet.cell(index, 'G') }).id
+
+      if competition.results.new({ runner_id: runner.id, category_id: category_id }).save
+        @success_result << runner.name
+      else
+        @fail_result << runner.name
       end
     end
   end
 
   def add_competition_file
-    if params[:path]
-      file = File.read("/home/romanciobanu/results/#{params[:path]}")
-      html = Nokogiri::HTML(file)
+    return unless params[:path]
 
-      competition      = []
-      competition_name = html.css('td.s1')[1].text
-      competition_date = html.at_css('td.s2').text[/\d{2}.\d{2}.\d{4}/]
-      competition_distance_type = html.css('td.s1')[3].text
+    file = File.read("/home/romanciobanu/results/#{params[:path]}")
+    html = Nokogiri::HTML(file)
 
-      @success_competition = []
-      @fail_competition    = []
-      @success_club = []
-      @fail_club    = []
-      @success_runner = []
-      @fail_runner    = []
-      @success_result = []
-      @fail_result = []
-      clubs = []
+    competitions              = []
+    competition_name          = html.css('td.s1')[1].text
+    competition_date          = html.at_css('td.s2').text[/\d{2}.\d{2}.\d{4}/]
+    competition_distance_type = html.css('td.s1')[3].text
 
-      html.css('tr').each_with_index do |row, index|
-        next unless row.text.include?('Categoria de vârstă')
+    @success_competition = []
+    @fail_competition    = []
+    @success_club = []
+    @fail_club    = []
+    @success_runner = []
+    @fail_runner    = []
+    @success_result = []
+    @fail_result = []
+    clubs = []
 
-        hash                 = {}
-        hash[:name]          = competition_name
-        hash[:date]          = competition_date
-        hash[:location]      = nil
-        hash[:country]       = 'Moldova'
-        hash[:distance_type] = competition_distance_type
-        hash[:index]         = index
-        hash[:group]         = row.at_css('td.s7').text
-        hash[:results]       = []
+    html.css('tr').each_with_index do |row, index|
+      next unless row.text.include?('Categoria de vârstă')
 
-        hash[:id] = add_competition(hash)
-        competition << hash
+      competition_hash = {
+        name:           competition_name,
+        date:           competition_date,
+        location:       nil,
+        country:        'Moldova',
+        distance_type:  competition_distance_type,
+        index:          index,
+        group:          row.at_css('td.s7').text
+      }.compact
+
+      competition_hash[:id] = add_competition(competition_hash).id
+
+      competitions << competition_hash
+    end
+
+    competitions << { index: html.css('tr').size }
+
+    headers     = html.at_css("tr[style='height:48px']")
+    header_hash = parse_headers(headers)
+
+    html.css('tr').each_with_index do |row, index|
+      unless row.attribute('style').value == 'height:16px' ||
+             (row.attribute('style').value == 'height:15px' && row.at_css('td').text == '1')
+        next
       end
 
-      competition << { index: html.css('tr').size }
+      ind = competitions.index(competitions.detect { |aa| aa[:index] > index }) - 1
+      competition = Competition.find(competitions[ind][:id])
 
-      headers     = html.at_css("tr[style='height:48px']")
-      header_hash = parse_headers(headers)
+      club = add_club({ name: row.css('td')[header_hash[:club]].text }.compact)
+      name, surname = row.css('td')[header_hash[:name]].text.split
 
-      html.css('tr').each_with_index do |row, index|
-        unless row.attribute('style').value == 'height:16px' ||
-               (row.attribute('style').value == 'height:15px' && row.at_css('td').text == '1')
-          next
-        end
+      runner_hash = {
+        'name'    => name,
+        'surname' => surname,
+        'club_id' => club.id,
+        'gender'  => competition.group.first
+      }
+      runner = add_runner_test(runner_hash)
 
-        ind = competition.index(competition.detect { |aa| aa[:index] > index }) - 1
-
-        club = add_club(row.css('td')[header_hash[:club]].text)
-        runner = add_runner(row.css('td')[header_hash[:name]].text, club, competition[ind][:group].first)
-
-        hash_result = {}
-        hash_result[:runner_id] = runner.id
-        hash_result[:place] = row.css('td')[header_hash[:place]].text.to_i
-        time_array = row.css('td')[header_hash[:result]].text.split(/:|\./)
-        hash_result[:time] = time_array.first.to_i * 3600 + time_array[1].to_i * 60 + time_array.last.to_i
-        hash_result[:competition_id] = Competition.find(competition[ind][:id]).id
-        hash_result[:category_id] = 11
-        add_result(hash_result)
-      end
+      hash_result = {}
+      hash_result[:runner_id] = runner.id
+      hash_result[:place] = row.css('td')[header_hash[:place]].text.to_i
+      time_array = row.css('td')[header_hash[:result]].text.split(/:|\./)
+      hash_result[:time] = time_array.first.to_i * 3600 + time_array[1].to_i * 60 + time_array.last.to_i
+      hash_result[:competition_id] = competition.id
+      hash_result[:category_id] = detect_category({ name: row.css('td')[header_hash[:category]].text.gsub("І", "I") }).id
+      add_result(hash_result)
     end
   end
 
   def add_competition(hash)
     @hash = hash
-    competition = {
+    competition_hash = {
       'name' => hash[:name],
-      'date(1i)' => hash[:date].split('.').last,
-      'date(2i)' => hash[:date].split('.')[1],
-      'date(3i)' => hash[:date].split('.').first,
+      'date(1i)' => hash[:date].to_date.year.to_s,
+      'date(2i)' => hash[:date].to_date.month.to_s,
+      'date(3i)' => hash[:date].to_date.day.to_s,
       'location' => hash[:location],
       'country' => hash[:country],
       'distance_type' => hash[:distance_type],
       'group' => hash[:group]
     }
 
-    competition = Competition.new(competition)
+    competition = Competition.new(competition_hash)
 
     if competition.save
       @success_competition << hash[:group]
@@ -198,7 +234,7 @@ class HomeController < ApplicationController
       @fail_competition << hash[:group]
     end
 
-    competition.id
+    competition
   end
 
   def parse_headers(html)
@@ -213,6 +249,8 @@ class HomeController < ApplicationController
         header_hash[:result] = index
       when /Echipa/
         header_hash[:club] = index
+      when /Cat\./
+        header_hash[:category] = index
       end
     end
     header_hash
@@ -221,11 +259,11 @@ class HomeController < ApplicationController
   def add_club(club)
     return if club.blank?
 
-    club_id = Club.find_by(name: club)
+    club_id = Club.find_by(name: club[:name])
 
     return club_id if club_id
 
-    new_club = Club.new({ name: club })
+    new_club = Club.new(club)
     if new_club.save
       @success_club << club
     else
@@ -253,8 +291,22 @@ class HomeController < ApplicationController
     new_runner
   end
 
+  def add_runner_test(hash)
+    runner_id = Runner.find_by(hash.slice('name', 'surname'))
+    return runner_id if runner_id
+
+    new_runner = Runner.new(hash)
+
+    if new_runner.save
+      @success_runner << new_runner
+    else
+      @fail_runner << new_runner
+    end
+
+    new_runner
+  end
+
   def add_result(hash)
-    # @hash_result ||= hash
     new_result = Result.new(hash)
 
     if new_result.save
@@ -262,5 +314,9 @@ class HomeController < ApplicationController
     else
       @fail_result << new_result.runner.name
     end
+  end
+
+  def detect_category(hash)
+    Category.find_by(hash) || Category.find(11)
   end
 end

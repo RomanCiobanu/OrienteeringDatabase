@@ -3,9 +3,18 @@
 <%= file_field_tag :path %>
 <%= submit_tag "Submit" %>
 <% end %>
-<% if @success || @fail%>
-<p>success: <%= @success %></p>
-<p>fail: <%= @fail %></p>
-<% end %>
+Club:
+<p>success: <%= @success_club %></p>
+<p>fail: <%= @fail_club %></p>
+Runner:
+<p>success: <%= @success_runner %></p>
+<p>fail: <%= @fail_runner %></p>
+Competitions
+<p>success: <%= @success_competition %></p>
+<p>fail: <%= @fail_cometition %></p>
+Results
+<p>success: <%= @success_result %></p>
+<p>fail: <%= @fail_result %></p>
 
 
+<p>data: <%= @aaa %></p>

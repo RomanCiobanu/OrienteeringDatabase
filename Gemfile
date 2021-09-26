@@ -61,3 +61,5 @@ gem 'rubyXL'
 
 gem 'roo'
 
+gem 'will_paginate', '~> 3.3.0'
+

@@ -16,7 +16,7 @@
             <% row.drop(1).each do |column| %>
             <td>
                 <%if column.last == 'link'%>
-                <%= link_to column.second, method("#{column.first}_path").call(row.first) %>
+                <%= link_to column.second, method("#{column.first}_path").call(column[2]) %>
             </td>
             <% else %>
             <%= column.last %>
