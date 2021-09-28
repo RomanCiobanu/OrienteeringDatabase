@@ -35,7 +35,7 @@
     <%= form.label :seconds %>
     <%= form.number_field :seconds %>
     <% when "select" %>
-        <%= form.select el.first.to_sym, el[1] %>
+        <%= form.select el.first.to_sym, el[1],{}, {onChange: "myFunction(this.options[this.selectedIndex].innerHTML)"} %>
     <% else %>
     <%= form.method("#{el.last}_field").call el.first.to_sym, class: "form-control"  %>
     <% end %>

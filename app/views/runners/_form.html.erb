@@ -1,3 +1,17 @@
+  <script>
+    function hide() {
+    obj = document.getElementById("create-competition").setAttribute("hidden", true);
+    }
+
+        function show() {
+    obj = document.getElementById("create-competition").removeAttribute("hidden");
+    }
+
+    function myFunction(text) {
+      document.getElementById("test").innerHTML = text
+    }
+  </script>
+
   <% fields = [
     ["name", "text"],
     ["surname", "text"],
@@ -8,3 +22,38 @@
 
   ]%>
   <%= render partial: '/layouts/form', :locals => { :elements => fields, :model => runner} %>
+
+  <% competition_fields = [
+  ["name", "text"],
+  ["date", [], "date"],
+  ["location", "text"],
+  ["country", "text"],
+  ["group", "text"],
+  ["distance_type", "text"],
+  ["rang", "text"]
+] %>
+<div id="create-competition">
+<hr>
+
+<%= render partial: '/layouts/form', :locals => { :elements => competition_fields, :model => Competition.new} %>
+</div>
+
+<button onclick="hide()">Hide</button>
+<button onclick="show()">Show</button>
+
+<label for="cars">Choose a car:</label>
+<%= form_with(model: runner) do |form| %>
+
+<%= form.label :gender, class: "form-control" %>
+
+<%= form.select :gender, ["M", "F"],{}, {onChange: "myFunction(this.options[this.selectedIndex].innerHTML)"}%>
+<% end %>
+
+<select name="cars" id="cars" onChange="myFunction(this.options[this.selectedIndex].innerHTML)">
+  <option value="volvo">Volvo</option>
+  <option value="saab">Saab</option>
+  <option value="mercedes">Mercedes</option>
+  <option value="audi">Audi</option>
+</select>
+
+<p id="test">test </p>

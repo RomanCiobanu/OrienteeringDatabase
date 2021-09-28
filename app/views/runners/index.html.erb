@@ -10,3 +10,11 @@
 <% if user_signed_in? %>
 <%= link_to('New Runner', new_runner_path, class: "btn btn-info") %>
 <% end %>
+
+
+<h4>Runner Search:</h4>
+
+<%= form_tag(runners_path, method: :get) do %>
+<%= text_field_tag(:search, params[:search]) %>
+<%= submit_tag ("Search") %>
+<% end %>

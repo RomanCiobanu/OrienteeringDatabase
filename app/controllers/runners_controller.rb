@@ -3,8 +3,11 @@ class RunnersController < ApplicationController
 
   # GET /runners or /runners.json
   def index
+    if params[:search]
+      @runners = Runner.where(name: params[:search]).paginate(page: params[:page], per_page: 30)
+    else
     @runners = Runner.paginate(page: params[:page], per_page: 30)
-
+end
     @index_array = runners_index_array(@runners)
   end
 
