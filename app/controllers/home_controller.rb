@@ -1,11 +1,11 @@
 class HomeController < ApplicationController
   def index
-    # @clubs_count = Club.count
-    # @runners_count = Runner.count
+    @clubs_count = Club.count
+    @runners_count = Runner.count
 
-    # runner_one = Runner.order('RANDOM()').first.id
-    # runner_two = Runner.order('RANDOM()').last.id
-    # show_wins(runner_one, runner_two)
+    runner_one = Runner.order('RANDOM()').first.id
+    runner_two = Runner.order('RANDOM()').last.id
+    show_wins(runner_one, runner_two)
   end
 
   def about
