@@ -3,7 +3,7 @@ class RunnersController < ApplicationController
 
   # GET /runners or /runners.json
   def index
-    @runners = Runner.all
+    @runners = Runner.paginate(page: params[:page], per_page: 30)
 
     @index_array = runners_index_array(@runners)
   end

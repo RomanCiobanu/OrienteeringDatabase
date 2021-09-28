@@ -1,6 +1,9 @@
 <h1 style="text-align:center; color:green">Runners</h1>
 
-<%= render partial: '/layouts/index'%>
+ <%= will_paginate @runners, previous_label: '&laquo;', next_label: '&raquo;' %>
+
+<%= render partial: '/layouts/index'  %>
+ <%= will_paginate @runners, previous_label: '&laquo;', next_label: '&raquo;' %>
 
 <br>
 

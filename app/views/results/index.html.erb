@@ -1,6 +1,12 @@
 <h1 style="text-align:center; color:green">Results</h1>
 
+
+ <%= will_paginate @results, previous_label: '&laquo;', next_label: '&raquo;' %>
+
 <%= render partial: '/layouts/index'  %>
+ <%= will_paginate @results, previous_label: '&laquo;', next_label: '&raquo;' %>
+
+
 
 <% if user_signed_in? %>
 <%= link_to 'New Result', new_result_path, class: "btn btn-info" %>
