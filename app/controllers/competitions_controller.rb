@@ -36,9 +36,9 @@ class CompetitionsController < ApplicationController
   # POST /competitions or /competitions.json
   def create
     params = competition_params
-    params[:rang] = competition_params[:result].map do |result|
-      get_category(result.runner, competition.date - 1.day, competition.date - 2.years).points
-    end.sum
+    # params[:rang] = competition_params[:result].map do |result|
+    #   get_category(result.runner, competition.date - 1.day, competition.date - 2.years).points
+    # end.sum
 
     @competition = Competition.new(params)
 

@@ -27,16 +27,45 @@ end
   # POST /runners or /runners.json
   def create
     params = runner_params
-    @runner = Runner.new(params)
+
+    @runner = Runner.new( {
+      name: params[:name],
+       surname: params[:surname],
+       gender: params[:gender],
+       dob: params[:dob],
+       club_id: params[:club_id]
+     }
+    )
+    @runner.save
+
+    unless params[:category_id] == 11
+      competition = Competition.new(
+        {
+          name:          params[:competition_name],
+          date:          params[:date],
+          location:      params[:location],
+          country:       params[:country],
+          group:         params[:group],
+          distance_type: params[:distance_type]
+        }
+      )
+      competition.save
+
+      result = Result.new(
+        {
+          place: params[:place],
+          time: params[:hours].to_i * 3600 + params[:minutes].to_i * 60 + params[:seconds].to_i,
+          category_id: params[:category_id],
+          competition_id: competition.id,
+          runner_id: @runner.id
+        }
+      )
+      result.save
+    end
 
     respond_to do |format|
-      if @runner.save
-        format.html { redirect_to @runner, notice: 'Runner was successfully created.' }
-        format.json { render :show, status: :created, location: @runner }
-      else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @runner.errors, status: :unprocessable_entity }
-      end
+      format.html { redirect_to @runner, notice: 'Runner was successfully created.' }
+      format.json { render :show, status: :created, location: @runner }
     end
   end
 
@@ -75,6 +104,6 @@ end
 
   # Only allow a list of trusted parameters through.
   def runner_params
-    params.require(:runner).permit(:name, :surname, :gender, :dob, :category_id, :club_id)
+    params.require(:runner).permit(:name, :surname, :gender, :dob, :category_id, :club_id, :competition_name, :date, :location, :country, :group, :distance_type, :rang, :place, :hours, :minutes, :seconds)
   end
 end
