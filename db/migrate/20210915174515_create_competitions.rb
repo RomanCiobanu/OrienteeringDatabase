@@ -6,7 +6,7 @@ class CreateCompetitions < ActiveRecord::Migration[6.1]
       t.string :location
       t.string :country
       t.string :group
-      t.string :type
+      t.string :distance_type
       t.float :rang
 
       t.timestamps
