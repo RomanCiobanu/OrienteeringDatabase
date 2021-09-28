@@ -43,7 +43,6 @@ end
   # PATCH/PUT /runners/1 or /runners/1.json
   def update
     params = runner_params
-
     respond_to do |format|
       if @runner.update(params)
         format.html { redirect_to @runner, notice: 'Runner was successfully updated.' }

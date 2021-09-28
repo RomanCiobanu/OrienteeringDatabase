@@ -81,8 +81,9 @@ class HomeController < ApplicationController
 
   def add_runners_file
     return unless params[:path]
+    path = params[:path].tempfile.path
 
-    file = Roo::Spreadsheet.open("/home/romanciobanu/results/#{params[:path]}")
+    file = Roo::Spreadsheet.open(path)
     sheet = file.sheet(0)
 
     @success_competition = []
@@ -109,9 +110,7 @@ class HomeController < ApplicationController
         'name' => sheet.cell(index, 'B'),
         'surname' => sheet.cell(index, 'C'),
         'gender' => sheet.cell(index, 'F'),
-        'dob(1i)' => sheet.cell(index, 'D').split('.').last.to_i.to_s,
-        'dob(2i)' => sheet.cell(index, 'D').split('.')[1].to_i.to_s,
-        'dob(3i)' => sheet.cell(index, 'D').split('.').first.to_i.to_s,
+        'dob' => sheet.cell(index, 'D').to_date.as_json,
         # 'category_id' => Category.find_by(name: sheet.cell(index, 'E')).id || 48,
         'club_id' => club.id || 11
       }.compact
@@ -217,9 +216,7 @@ class HomeController < ApplicationController
     @hash = hash
     competition_hash = {
       'name' => hash[:name],
-      'date(1i)' => hash[:date].to_date.year.to_s,
-      'date(2i)' => hash[:date].to_date.month.to_s,
-      'date(3i)' => hash[:date].to_date.day.to_s,
+      'date' => hash[:date].to_date.as_json,
       'location' => hash[:location],
       'country' => hash[:country],
       'distance_type' => hash[:distance_type],
