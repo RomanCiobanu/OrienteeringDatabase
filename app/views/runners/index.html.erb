@@ -1,5 +1,13 @@
 <h1 style="text-align:center; color:green">Runners</h1>
 
+<h4>Runner Search:</h4>
+
+<%= form_tag(runners_path, method: :get) do %>
+<%= text_field_tag(:search, params[:search]) %>
+<%= submit_tag ("Search") %>
+<% end %>
+
+<hr>
  <%= will_paginate @runners, previous_label: '&laquo;', next_label: '&raquo;' %>
 
 <%= render partial: '/layouts/index'  %>
@@ -12,9 +20,4 @@
 <% end %>
 
 
-<h4>Runner Search:</h4>
 
-<%= form_tag(runners_path, method: :get) do %>
-<%= text_field_tag(:search, params[:search]) %>
-<%= submit_tag ("Search") %>
-<% end %>

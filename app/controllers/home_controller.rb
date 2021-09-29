@@ -81,6 +81,7 @@ class HomeController < ApplicationController
 
   def add_runners_file
     return unless params[:path]
+
     path = params[:path].tempfile.path
 
     file = Roo::Spreadsheet.open(path)
@@ -106,6 +107,8 @@ class HomeController < ApplicationController
     club = add_club(club_data)
 
     (5..sheet.last_row).each do |index|
+      next if sheet.cell(index, 'B').blank?
+
       runner_hash = {
         'name' => sheet.cell(index, 'B'),
         'surname' => sheet.cell(index, 'C'),
@@ -125,11 +128,18 @@ class HomeController < ApplicationController
         distance_type: sheet.cell(index, 'K'),
         group: sheet.cell(index, 'J')
       }
-      competition = add_competition(competition_hash)
 
+      competition = add_competition(competition_hash)
       category_id = detect_category({ name: sheet.cell(index, 'G') }).id
 
-      if competition.results.new({ runner_id: runner.id, category_id: category_id }).save
+      time = sheet.cell(index, 'N') + 1 if sheet.cell(index, 'N')
+
+      if competition.results.new({
+        runner_id: runner.id,
+        category_id: category_id,
+        place: sheet.cell(index, 'O'),
+        time: time
+      }.compact).save
         @success_result << runner.name
       else
         @fail_result << runner.name
@@ -140,7 +150,8 @@ class HomeController < ApplicationController
   def add_competition_file
     return unless params[:path]
 
-    file = File.read("/home/romanciobanu/results/#{params[:path]}")
+    path = params[:path].tempfile.path
+    file = File.read(path)
     html = Nokogiri::HTML(file)
 
     competitions              = []
@@ -162,13 +173,13 @@ class HomeController < ApplicationController
       next unless row.text.include?('Categoria de vârstă')
 
       competition_hash = {
-        name:           competition_name,
-        date:           competition_date,
-        location:       nil,
-        country:        'Moldova',
-        distance_type:  competition_distance_type,
-        index:          index,
-        group:          row.at_css('td.s7').text
+        name: competition_name,
+        date: competition_date,
+        location: nil,
+        country: 'Moldova',
+        distance_type: competition_distance_type,
+        index: index,
+        group: row.at_css('td.s7').text
       }.compact
 
       competition_hash[:id] = add_competition(competition_hash).id
@@ -194,10 +205,10 @@ class HomeController < ApplicationController
       name, surname = row.css('td')[header_hash[:name]].text.split
 
       runner_hash = {
-        'name'    => name,
+        'name' => name,
         'surname' => surname,
         'club_id' => club.id,
-        'gender'  => competition.group.first
+        'gender' => competition.group.first
       }
       runner = add_runner_test(runner_hash)
 
@@ -207,7 +218,7 @@ class HomeController < ApplicationController
       time_array = row.css('td')[header_hash[:result]].text.split(/:|\./)
       hash_result[:time] = time_array.first.to_i * 3600 + time_array[1].to_i * 60 + time_array.last.to_i
       hash_result[:competition_id] = competition.id
-      hash_result[:category_id] = detect_category({ name: row.css('td')[header_hash[:category]].text.gsub("І", "I") }).id
+      hash_result[:category_id] = detect_category({ name: row.css('td')[header_hash[:category]].text.gsub('І', 'I') }).id
       add_result(hash_result)
     end
   end

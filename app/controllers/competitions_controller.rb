@@ -68,6 +68,8 @@ class CompetitionsController < ApplicationController
 
   # DELETE /competitions/1 or /competitions/1.json
   def destroy
+    @competition.results.each(&:destroy)
+
     @competition.destroy
     respond_to do |format|
       format.html { redirect_to competitions_url, notice: 'Competition was successfully destroyed.' }

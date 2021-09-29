@@ -3,11 +3,12 @@ class RunnersController < ApplicationController
 
   # GET /runners or /runners.json
   def index
-    if params[:search]
-      @runners = Runner.where(name: params[:search]).paginate(page: params[:page], per_page: 30)
-    else
-    @runners = Runner.paginate(page: params[:page], per_page: 30)
-end
+    @runners = if params[:search]
+                 Runner.where(name: params[:search]).or(Runner.where(surname: params[:search])).paginate(page: params[:page], per_page: 30)
+               else
+                 Runner.paginate(page: params[:page], per_page: 30)
+               end
+
     @index_array = runners_index_array(@runners)
   end
 
@@ -28,24 +29,23 @@ end
   def create
     params = runner_params
 
-    @runner = Runner.new( {
-      name: params[:name],
-       surname: params[:surname],
-       gender: params[:gender],
-       dob: params[:dob],
-       club_id: params[:club_id]
-     }
-    )
+    @runner = Runner.new({
+                           name: params[:name],
+                           surname: params[:surname],
+                           gender: params[:gender],
+                           dob: params[:dob],
+                           club_id: params[:club_id]
+                         })
     @runner.save
 
     unless params[:category_id] == 11
       competition = Competition.new(
         {
-          name:          params[:competition_name],
-          date:          params[:date],
-          location:      params[:location],
-          country:       params[:country],
-          group:         params[:group],
+          name: params[:competition_name],
+          date: params[:date],
+          location: params[:location],
+          country: params[:country],
+          group: params[:group],
           distance_type: params[:distance_type]
         }
       )
@@ -85,6 +85,8 @@ end
 
   # DELETE /runners/1 or /runners/1.json
   def destroy
+    @runner.results.each(&:destroy)
+
     @runner.destroy
     respond_to do |format|
       format.html { redirect_to runners_url, notice: 'Runner was successfully destroyed.' }
@@ -104,6 +106,9 @@ end
 
   # Only allow a list of trusted parameters through.
   def runner_params
-    params.require(:runner).permit(:name, :surname, :gender, :dob, :category_id, :club_id, :competition_name, :date, :location, :country, :group, :distance_type, :rang, :place, :hours, :minutes, :seconds)
+    params.require(:runner).permit(
+      :name, :surname, :gender, :dob, :category_id, :club_id, :competition_name, :date,
+      :location, :country, :group, :distance_type, :rang, :place, :hours, :minutes, :seconds
+    )
   end
 end

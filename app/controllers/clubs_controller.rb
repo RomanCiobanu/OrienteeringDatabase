@@ -48,6 +48,11 @@ class ClubsController < ApplicationController
 
   # DELETE /clubs/1 or /clubs/1.json
   def destroy
+    @club.runners.each do |runner|
+      runner.club.id = 1
+      runner.save
+    end
+
     @club.destroy
     respond_to do |format|
       format.html { redirect_to clubs_url, notice: 'Club was successfully destroyed.' }
