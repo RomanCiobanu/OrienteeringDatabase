@@ -74,15 +74,15 @@ class ClubsController < ApplicationController
   end
 
   def index_array
-    @clubs.map do |club|
+    sort_table(@clubs).map do |club|
       [
         club,
-        ['Name', club.name],
-        ['Territory', club.territory],
-        ['Representative', club.representative],
-        ['Email', club.email],
-        ['Phone', club.phone],
-        ['Runners', club.runners.count]
+        ['Name', 'name', club.name],
+        ['Territory', 'territory', club.territory],
+        ['Representative', 'representative', club.representative],
+        ['Email', 'email', club.email],
+        ['Phone', 'phone', club.phone],
+        ['Runners', 'runners.count', club.runners.count]
       ]
     end
   end

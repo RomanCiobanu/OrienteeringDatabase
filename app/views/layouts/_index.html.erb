@@ -4,7 +4,7 @@
         <tr class="table-primary">
             <% @index_array.first.drop(1).each do |column| %>
             <th>
-                <%= column.first.titlecase %>
+                <%= link_to column.first.titlecase, sort: column.second  %>
             </th>
             <% end %>
             <th colspan="3">Actions</th>
@@ -16,7 +16,7 @@
             <% row.drop(1).each do |column| %>
             <td>
                 <%if column.last == 'link'%>
-                <%= link_to column.second, method("#{column.first}_path").call(column[2]) %>
+                <%= link_to column[2], method("#{column.first}_path").call(column[3]) %>
             </td>
             <% else %>
             <%= column.last %>

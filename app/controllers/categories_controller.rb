@@ -7,9 +7,9 @@ class CategoriesController < ApplicationController
     @index_array = @categories.map do |category|
       [
         category,
-        ['Name', category.name],
-        ['Full name', category.full_name],
-        ['Points', category.points]
+        ['Name', 'name', category.name],
+        ['Full name', 'full_name', category.full_name],
+        ['Points', 'points', category.points]
       ]
     end
   end

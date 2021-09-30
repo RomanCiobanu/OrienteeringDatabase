@@ -3,12 +3,22 @@ class RunnersController < ApplicationController
 
   # GET /runners or /runners.json
   def index
-    @runners = if params[:search]
-                 Runner.where(name: params[:search]).or(Runner.where(surname: params[:search])).paginate(page: params[:page], per_page: 30)
+    Runner.all.each do |runner|
+      category = get_category(runner)
+      runner.category_id = category.id
+      runner.save
+    end
+    @runners =
+      if params[:search]
+        Runner.where("name LIKE '%#{params[:search]}%'").or(Runner.where("surname LIKE '%#{params[:search]}%'"))
+      else
+        Runner.all
+      end.paginate(page: params[:page], per_page: 30)
+    @runners = if params[:sort]&.include?('.')
+                 @runners.joins(params[:sort].split('.').first.singularize.to_sym).order(params[:sort])
                else
-                 Runner.paginate(page: params[:page], per_page: 30)
+                 @runners.order(params[:sort])
                end
-
     @index_array = runners_index_array(@runners)
   end
 
@@ -33,7 +43,7 @@ class RunnersController < ApplicationController
                            name: params[:name],
                            surname: params[:surname],
                            gender: params[:gender],
-                           dob: params[:dob],
+                           dob: "#{params['dob(1i)']}-#{params['dob(2i)']}-#{params['dob(3i)']}",
                            club_id: params[:club_id]
                          })
     @runner.save
@@ -73,7 +83,13 @@ class RunnersController < ApplicationController
   def update
     params = runner_params
     respond_to do |format|
-      if @runner.update(params)
+      if @runner.update({
+                          name: params[:name],
+                          surname: params[:surname],
+                          gender: params[:gender],
+                          dob: "#{params['dob(1i)']}-#{params['dob(2i)']}-#{params['dob(3i)']}",
+                          club_id: params[:club_id]
+                        })
         format.html { redirect_to @runner, notice: 'Runner was successfully updated.' }
         format.json { render :show, status: :ok, location: @runner }
       else
