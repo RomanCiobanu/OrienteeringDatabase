@@ -33,7 +33,7 @@ class ApplicationController < ActionController::Base
   end
 
   def sort_table(elements)
-    return  elements unless params[:sort]
+    return elements unless params[:sort]
 
     case params[:sort]
     when /count/
@@ -43,5 +43,13 @@ class ApplicationController < ActionController::Base
     else
       elements.order(params[:sort].to_sym)
     end
+  end
+
+  def default_category
+    Category.find(11)
+  end
+
+  def default_competition
+    Competition.find_by(name: 'Fara Competitie')
   end
 end

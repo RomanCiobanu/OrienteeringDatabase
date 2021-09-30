@@ -49,24 +49,12 @@ class RunnersController < ApplicationController
     @runner.save
 
     unless params[:category_id] == 11
-      competition = Competition.new(
-        {
-          name: params[:competition_name],
-          date: params[:date],
-          location: params[:location],
-          country: params[:country],
-          group: params[:group],
-          distance_type: params[:distance_type]
-        }
-      )
-      competition.save
-
       result = Result.new(
         {
           place: params[:place],
           time: params[:hours].to_i * 3600 + params[:minutes].to_i * 60 + params[:seconds].to_i,
           category_id: params[:category_id],
-          competition_id: competition.id,
+          competition_id: add_competition.id,
           runner_id: @runner.id
         }
       )
@@ -126,5 +114,23 @@ class RunnersController < ApplicationController
       :name, :surname, :gender, :dob, :category_id, :club_id, :competition_name, :date,
       :location, :country, :group, :distance_type, :rang, :place, :hours, :minutes, :seconds
     )
+  end
+
+  def add_competition
+    return default_competition if params[:competition_name].blank?
+
+    Competition.new(
+      {
+        name: params[:competition_name],
+        date: params[:date],
+        location: params[:location],
+        country: params[:country],
+        group: params[:group],
+        distance_type: params[:distance_type]
+      }
+    )
+    competition.save
+
+    competition
   end
 end
