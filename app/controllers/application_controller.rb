@@ -33,13 +33,13 @@ class ApplicationController < ActionController::Base
   end
 
   def sort_table(elements)
-    if params[:sort]&.include?('.')
-      if params[:sort]&.include?('count')
-        elements.left_joins(:runners)
-  .group(:id).order("COUNT(#{params[:sort].split('.').first}.id)")
-      else
+    return  elements unless params[:sort]
+
+    case params[:sort]
+    when /count/
+      elements.left_joins(:runners).group(:id).order("COUNT(#{params[:sort].split('.').first}.id)")
+    when /\./
       elements.joins(params[:sort].split('.').first.singularize.to_sym).order(params[:sort])
-      end
     else
       elements.order(params[:sort].to_sym)
     end
