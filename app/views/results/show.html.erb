@@ -1,16 +1,7 @@
 <h1 style="text-align:center; color:green">Results</h1>
 
 
-<% columns = ["place", "runner_call_name", "time_edit", "category_call_name", "competition_call_name"]
+<% fields = ["place", "runner_call_name", "time_edit", "category_call_name", "competition_call_name"]
 results = [@result] %>
-<%= render partial: '/layouts/index', :locals => { :columns => columns, :categories => results  } %>
-
-
-<p class="lead">
-        <% if user_signed_in? %>
-        <%= link_to 'Edit', edit_result_path(@result), class: "btn btn-success btn-sm" %>
-        <% end %>
-        <%= link_to 'Back', results_path, class: "btn btn-danger btn-sm" %>
-    </p>
-
-<%= @aaa %>
+<%= render partial: '/layouts/index', :locals => { :columns => fields, :categories => results  } %>
+<%= render partial: '/layouts/show_actions', :locals => { :element => fields.first} %>

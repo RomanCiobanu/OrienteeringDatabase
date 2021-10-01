@@ -4,18 +4,7 @@
   [["territory"], ["representative"]],
   ["email", "phone" ]
 ]
-
 %>
-
-
 <%= render partial: '/layouts/show', :locals => { :elements => fields} %>
-
 <%= render partial: '/layouts/index'%>
-
-    <p class="lead">
-        <% if user_signed_in? %>
-        <%= link_to 'Add Runner', new_runner_path, class: "btn btn-info btn-sm" %>
-        <%= link_to 'Edit', edit_club_path(@club), class: "btn btn-success btn-sm" %>
-        <% end %>
-        <%= link_to 'Back', clubs_path, class: "btn btn-danger btn-sm" %>
-    </p>
+<%= render partial: '/layouts/show_actions', :locals => { :element => fields.first} %>
