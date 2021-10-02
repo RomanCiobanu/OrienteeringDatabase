@@ -26,9 +26,17 @@ class ResultsController < ApplicationController
   # POST /results or /results.json
   def create
     params = result_params
-    params[:time] = params[:hours].to_i * 3600 + params[:minutes].to_i * 60 + params[:seconds].to_i
+    params[:competition_id] = competition_id(params)
 
-    @result = Result.new(params.except(:hours, :minutes, :seconds))
+    @result = Result.new(
+       {
+          place: params[:place].to_i,
+          time: params[:hours].to_i * 3600 + params[:minutes].to_i * 60 + params[:seconds].to_i,
+          category_id: params[:category_id],
+          competition_id: params[:competition_id],
+          runner_id: params[:runner_id]
+        }
+    )
 
     respond_to do |format|
       if @result.save
@@ -79,6 +87,25 @@ class ResultsController < ApplicationController
 
   # Only allow a list of trusted parameters through.
   def result_params
-    params.require(:result).permit(:place, :runner_id, :hours, :minutes, :seconds, :category_id, :competition_id)
+    params.require(:result).permit(:place, :runner_id, :hours, :minutes, :seconds, :category_id, :competition_id,
+      :competition_name, :date, :location, :country, :group, :distance_type)
+  end
+
+  def competition_id(params)
+    return params[:competition_id] unless params[:competition_id] == 'New'
+
+    competition = Competition.new(
+      {
+        name: params[:competition_name],
+        date: params[:date],
+        location: params[:location],
+        country: params[:country],
+        group: params[:group],
+        distance_type: params[:distance_type]
+      }
+    )
+    competition.save
+
+    competition.id
   end
 end

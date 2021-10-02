@@ -66,5 +66,6 @@ gem 'rubyXL'
 gem 'roo'
 
 gem 'will_paginate', '~> 3.1.1'
+gem 'pry', '~> 0.13.1'
 gem 'will_paginate-bootstrap4'
 

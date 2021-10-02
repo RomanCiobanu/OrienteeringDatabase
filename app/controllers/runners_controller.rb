@@ -40,7 +40,7 @@ class RunnersController < ApplicationController
     params = runner_params
 
     @runner = Runner.new({
-                           name: params[:name],
+                           name: params[:category_id],
                            surname: params[:surname],
                            gender: params[:gender],
                            dob: "#{params['dob(1i)']}-#{params['dob(2i)']}-#{params['dob(3i)']}",
@@ -48,19 +48,18 @@ class RunnersController < ApplicationController
                          })
     @runner.save
 
-    unless params[:category_id] == 11
+    unless params[:category_id].to_i == 11
       result = Result.new(
         {
           place: params[:place],
           time: params[:hours].to_i * 3600 + params[:minutes].to_i * 60 + params[:seconds].to_i,
           category_id: params[:category_id],
-          competition_id: add_competition.id,
+          competition_id: add_competition(params).id,
           runner_id: @runner.id
         }
       )
       result.save
     end
-
     respond_to do |format|
       format.html { redirect_to @runner, notice: 'Runner was successfully created.' }
       format.json { render :show, status: :created, location: @runner }
@@ -116,10 +115,10 @@ class RunnersController < ApplicationController
     )
   end
 
-  def add_competition
+  def add_competition(params)
     return default_competition if params[:competition_name].blank?
 
-    Competition.new(
+    competition = Competition.new(
       {
         name: params[:competition_name],
         date: params[:date],

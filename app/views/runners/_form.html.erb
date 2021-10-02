@@ -1,9 +1,9 @@
   <script>
-    function hide() {
+    function hide_competition() {
     obj = document.getElementById("create-competition").setAttribute("hidden", true);
     }
 
-        function show() {
+        function show_competition() {
     obj = document.getElementById("create-competition").removeAttribute("hidden");
     }
 
@@ -39,6 +39,6 @@
   ["place", "number"],
   ["duration"]
 ] %>
-<%= render partial: '/layouts/form', :locals => { :elements => fields, :model => runner, :extra => extra_fields} %>
+<%= render partial: '/layouts/form', :locals => { :elements => fields, :model => runner, :extra => extra_fields, :hidden => true} %>
 
 

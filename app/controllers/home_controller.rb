@@ -55,6 +55,8 @@ class HomeController < ApplicationController
   def show_wins(one, two)
     @runner_one = Runner.find(one)
     @runner_two = Runner.find(two)
+    @index_array1 = result_index_array(@runner_one.results)
+    @index_array2 = result_index_array(@runner_two.results)
 
     @runner_one_wins = 0
     @runner_two_wins = 0

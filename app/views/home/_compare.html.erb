@@ -8,9 +8,11 @@
     <tbody>
         <tr>
             <td>
+               <% @index_array = @index_array1 %>
                  <%= render partial: '/runners/show', :locals => { :runner => runner_one } %>
             </td>
               <td>
+               <% @index_array = @index_array2 %>
                  <%= render partial: '/runners/show', :locals => { :runner => runner_two } %>
             </td>
         </tr>

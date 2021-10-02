@@ -25,7 +25,9 @@
          string += "#{element.method(meth_name).call} "
         end
         [string[0..-2], element.id]
-    end %>
+    end
+    array.insert(0, ["New"]) if el.first == "competition"%>
+
     <%= form.select "#{el.first}_id".to_sym, array,  {}, {onChange: "myFunction(this.options[this.selectedIndex].innerHTML)"}%>
     <% when "duration" %>
     <%= form.label :hours %>
@@ -35,7 +37,7 @@
     <%= form.label :seconds %>
     <%= form.number_field :seconds %>
     <% when "select" %>
-        <%= form.select el.first.to_sym, el[1], {}, {onChange: "myFunction(this.options[this.selectedIndex].innerHTML)"} %>
+        <%= form.select el.first.to_sym, el[1], {}, {onChange: "myFunction()"} %>
     <% else %>
     <%= form.method("#{el.last}_field").call el.first.to_sym, class: "form-control"  %>
     <% end %>
@@ -43,7 +45,11 @@
 <% end %>
 <hr>
 <% if defined?(extra) %>
+<% if hidden %>
 <div id="create-competition" hidden>
+    <% else %>
+<div id="create-competition">
+    <% end %>
     <h2>Add Category Information</h2>
 <% extra.each do |el| %>
 <div class="field form-group">

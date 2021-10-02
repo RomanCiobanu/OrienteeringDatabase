@@ -1,3 +1,19 @@
+  <script>
+    function hide() {
+    obj = document.getElementById("create-competition").setAttribute("hidden", true);
+    }
+
+        function show() {
+    obj = document.getElementById("create-competition").removeAttribute("hidden");
+    }
+
+    function myFunction() {
+      aaa = document.getElementById("result_competition_id").value;
+      if (aaa == "New")  { show(); }
+       else { hide(); }
+     }
+  </script>
+  <body onload="myFunction()"></body>
 <% fields = [
     ["place", "number"],
     ["runner", @runners, ["name", "surname"], "id"],
@@ -5,4 +21,14 @@
     ["category", @categories,["full_name"], "id"],
     ["competition", @competitions, ["name", "distance_type"], "id"]
 ] %>
-<%= render partial: '/layouts/form', :locals => { :elements => fields, :model => result} %>
+
+  <% extra_fields = [
+  ["competition_name", "text"],
+  ["date", [], "date"],
+  ["location", "text"],
+  ["country", "text"],
+  ["group", "text"],
+  ["distance_type", "text"],
+] %>
+<%= render partial: '/layouts/form', :locals => { :elements => fields, :model => result, :extra => extra_fields, :hidden => false} %>
+<%= @aaa %>
