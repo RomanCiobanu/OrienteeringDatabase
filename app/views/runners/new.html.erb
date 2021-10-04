@@ -1,5 +1,24 @@
 <h1>New Runner</h1>
 <% if user_signed_in? %>
+<p>
+
+  <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+    Instruction
+  </button>
+</p>
+<div class="collapse" id="collapseExample">
+  <div class="card card-body">
+    <p> 1. Complete Information about new runner(name, surname, date of birth, gender, club) </p>
+    <p> 2. If runner doesn't have any category press Create Runner and skip next steps </p>
+    <p> 3. If runner has any category select it and section with information will be opened </p>
+    <p> 4. Select competition from list and complete information about time and place of runner </p>
+    <p> 5. If competition is not in the list, Select "New" and compete information about competition and result </p>
+    <p> 6. If you don't have information about competition select "<%= default_competition.name %>" and category will be saved for date 1 August 2021 </p>
+    <p> 7. Press Create Runner </p>
+  </div>
+</div>
+
+
 
 <%= render 'form', runner: @runner %>
 <br/>

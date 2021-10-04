@@ -47,9 +47,8 @@ function competition_visibility(text) {
     ["surname", "text"],
     ["gender", ["M", "W"], "select"],
     ["dob", [Date.today.year, Date.today.year - 80], "date"],
-    ["category", @categories,["full_name"], "id"],
-    ["club", @clubs, ["name"], "id"]
-
+    ["club", @clubs, ["name"], "id"],
+    ["category", @categories,["full_name"], "id"]
   ]%>
 <% competition_fields = [
   ["competition_name", "text"],

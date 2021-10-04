@@ -1,4 +1,6 @@
 class ApplicationController < ActionController::Base
+  helper_method :default_competition
+
   def runners_index_array(runners)
     runners.map do |runner|
       [
