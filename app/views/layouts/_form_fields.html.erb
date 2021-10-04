@@ -1,0 +1,43 @@
+<div class="field form-group">
+    <%= form.label el.first.to_sym, class: "form-control" %>
+    <% case el.last
+    when "date" %>
+    <%= form.date_select el.first.to_sym, start_year: el[1].first, end_year: el[1].last, class: "form-control" %>
+    <% when "id" %>
+    <% array = el[1].map do |element|
+        string = ""
+        el[2].each do |meth_name|
+         string += "#{element.method(meth_name).call} "
+        end
+        [string[0..-2], element.id]
+    end
+    array.insert(0, ["New"]) if el.first == "competition"%>
+
+    <%selector = case el.first
+    when "category" then "'create-result'"
+    when "competition" then "'create-competition'"
+    end %>
+
+    <%if selector %>
+        <%= form.select "#{el.first}_id".to_sym, array,  {}, {onChange: "visibility(#{selector})"}%>
+    <% else %>
+        <%= form.select "#{el.first}_id".to_sym, array %>
+    <% end %>
+
+    <% when "duration" %>
+    <%= form.label :hours %>
+    <%= form.number_field :hours %>
+    <%= form.label :minutes %>
+    <%= form.number_field :minutes %>
+    <%= form.label :seconds %>
+    <%= form.number_field :seconds %>
+    <% when "select" %>
+        <%= form.select el.first.to_sym, el[1], {}, {onChange: "visibility(#{selector})"} %>
+    <% else %>
+    <%= form.method("#{el.last}_field").call el.first.to_sym, class: "form-control"  %>
+    <% end %>
+</div>
+
+
+
+

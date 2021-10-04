@@ -30,6 +30,7 @@ class RunnersController < ApplicationController
     @runner = Runner.new
     @clubs = Club.all
     @categories = Category.all
+    @competitions = Competition.all
   end
 
   # GET /runners/1/edit
@@ -40,7 +41,7 @@ class RunnersController < ApplicationController
     params = runner_params
 
     @runner = Runner.new({
-                           name: params[:category_id],
+                           name: params[:name],
                            surname: params[:surname],
                            gender: params[:gender],
                            dob: "#{params['dob(1i)']}-#{params['dob(2i)']}-#{params['dob(3i)']}",
@@ -54,7 +55,7 @@ class RunnersController < ApplicationController
           place: params[:place],
           time: params[:hours].to_i * 3600 + params[:minutes].to_i * 60 + params[:seconds].to_i,
           category_id: params[:category_id],
-          competition_id: add_competition(params).id,
+          competition_id: competition_id(params),
           runner_id: @runner.id
         }
       )
@@ -104,6 +105,7 @@ class RunnersController < ApplicationController
     @runner = Runner.find(params[:id])
     @clubs = Club.all
     @categories = Category.all
+    @competitions = Competition.all
     @index_array = result_index_array(@runner.results)
   end
 
@@ -111,12 +113,15 @@ class RunnersController < ApplicationController
   def runner_params
     params.require(:runner).permit(
       :name, :surname, :gender, :dob, :category_id, :club_id, :competition_name, :date,
-      :location, :country, :group, :distance_type, :rang, :place, :hours, :minutes, :seconds
+      :location, :country, :group, :distance_type, :rang, :place, :hours, :minutes, :seconds,
+      :competition_id
     )
   end
 
-  def add_competition(params)
-    return default_competition if params[:competition_name].blank?
+  def competition_id(params)
+    return params[:competition_id] unless params[:competition_id] == 'New'
+
+    return default_competition.id if params[:competition_name].blank?
 
     competition = Competition.new(
       {
@@ -130,6 +135,6 @@ class RunnersController < ApplicationController
     )
     competition.save
 
-    competition
+    competition.id
   end
 end

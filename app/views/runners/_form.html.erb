@@ -1,24 +1,48 @@
-  <script>
-    function hide_competition() {
-    obj = document.getElementById("create-competition").setAttribute("hidden", true);
+<script>
+function hide(selector) {
+    document.getElementById(selector).setAttribute("hidden", true);
+
+}
+
+function show(selector) {
+    document.getElementById(selector).removeAttribute("hidden");
+}
+
+function visibility(text) {
+    if (text == "create-competition") {
+        competition_visibility(text);
+    } else {
+        result_visibility('create-result');
+    }
+}
+
+function result_visibility (text) {
+    aaa = document.getElementById("runner_category_id").value;
+    if (aaa != "11") {
+        show(text);
+        show('create-competition');
+
+    } else {
+      hide(text);
+      hide('create-competition');
+     }
+
+}
+
+function competition_visibility(text) {
+    aaa = document.getElementById("runner_competition_id").value;
+    if (aaa == "New") { show(text); }
+    else if (aaa == "34") {
+      hide(text);
+      selector = document.getElementById("create-result");
+      selector.getElementsByClassName('form-group')[1].setAttribute("hidden", true);
+      selector.getElementsByClassName('form-group')[2].setAttribute("hidden", true);
     }
 
-        function show_competition() {
-    obj = document.getElementById("create-competition").removeAttribute("hidden");
-    }
-
-    function myFunction(text) {
-
-      aaa = document.getElementById("runner_category_id").value;
-      if (aaa != "11") {
-        show();
-
-      } else { hide() }
-
-    }
-  </script>
-
-  <% fields = [
+    else { hide(text); }
+}
+</script>
+<% fields = [
     ["name", "text"],
     ["surname", "text"],
     ["gender", ["M", "W"], "select"],
@@ -27,18 +51,18 @@
     ["club", @clubs, ["name"], "id"]
 
   ]%>
-
-  <% extra_fields = [
+<% competition_fields = [
   ["competition_name", "text"],
   ["date", [], "date"],
   ["location", "text"],
   ["country", "text"],
   ["group", "text"],
   ["distance_type", "text"],
-  ["rang", "text"],
+  ]
+
+  results_fields = [
+  ["competition", @competitions, ["name", "distance_type"], "id"],
   ["place", "number"],
   ["duration"]
-] %>
-<%= render partial: '/layouts/form', :locals => { :elements => fields, :model => runner, :extra => extra_fields, :hidden => true} %>
-
-
+  ] %>
+<%= render partial: '/layouts/form', :locals => { elements: fields, model: runner, competition_extra: competition_fields,  results_exta: results_fields, hidden: true} %>

@@ -13,75 +13,38 @@
 </div>
 <% end %>
 <% elements.each do |el| %>
-<div class="field form-group">
-    <%= form.label el.first.to_sym, class: "form-control" %>
-    <% case el.last
-    when "date" %>
-    <%= form.date_select el.first.to_sym, start_year: el[1].first, end_year: el[1].last, class: "form-control" %>
-    <% when "id" %>
-    <% array = el[1].map do |element|
-        string = ""
-        el[2].each do |meth_name|
-         string += "#{element.method(meth_name).call} "
-        end
-        [string[0..-2], element.id]
-    end
-    array.insert(0, ["New"]) if el.first == "competition"%>
-
-    <%= form.select "#{el.first}_id".to_sym, array,  {}, {onChange: "myFunction(this.options[this.selectedIndex].innerHTML)"}%>
-    <% when "duration" %>
-    <%= form.label :hours %>
-    <%= form.number_field :hours %>
-    <%= form.label :minutes %>
-    <%= form.number_field :minutes %>
-    <%= form.label :seconds %>
-    <%= form.number_field :seconds %>
-    <% when "select" %>
-        <%= form.select el.first.to_sym, el[1], {}, {onChange: "myFunction()"} %>
-    <% else %>
-    <%= form.method("#{el.last}_field").call el.first.to_sym, class: "form-control"  %>
-    <% end %>
-</div>
+            <%= render partial: '/layouts/form_fields', :locals => { el: el, form: form } %>
+        </tr>
 <% end %>
 <hr>
-<% if defined?(extra) %>
+<% if defined?(results_exta) %>
+<% if hidden %>
+<div id="create-result" hidden>
+    <% else %>
+<div id="create-result">
+    <% end %>
+    <h2>Add Result Information</h2>
+<% results_exta.each do |el| %>
+ <%= render partial: '/layouts/form_fields', :locals => { el: el, form: form, selector: ""} %>
+        </tr>
+<% end %>
+</div>
+<% end %>
+<% if defined?(competition_extra) %>
 <% if hidden %>
 <div id="create-competition" hidden>
     <% else %>
 <div id="create-competition">
     <% end %>
-    <h2>Add Category Information</h2>
-<% extra.each do |el| %>
-<div class="field form-group">
-    <%= form.label el.first.to_sym, class: "form-control" %>
-    <% case el.last
-    when "date" %>
-    <%= form.date_select el.first.to_sym, start_year: el[1].first, end_year: el[1].last, class: "form-control" %>
-    <% when "id" %>
-    <% array = el[1].map do |element|
-        string = ""
-        el[2].each do |meth_name|
-         string += "#{element.method(meth_name).call} "
-        end
-        [string[0..-2], element.id]
-    end %>
-    <%= form.select "#{el.first}_id".to_sym, array,  {}, {onChange: "myFunction(this.options[this.selectedIndex].innerHTML)"}%>
-    <% when "duration" %>
-    <%= form.label :hours %>
-    <%= form.number_field :hours %>
-    <%= form.label :minutes %>
-    <%= form.number_field :minutes %>
-    <%= form.label :seconds %>
-    <%= form.number_field :seconds %>
-    <% when "select" %>
-        <%= form.select el.first.to_sym, el[1], {}, {onChange: "myFunction(this.options[this.selectedIndex].innerHTML)"} %>
-    <% else %>
-    <%= form.method("#{el.last}_field").call el.first.to_sym, class: "form-control"  %>
-    <% end %>
-</div>
+    <h2>Add Competition Information</h2>
+<% competition_extra.each do |el| %>
+ <%= render partial: '/layouts/form_fields', :locals => { el: el, form: form } %>
+        </tr>
 <% end %>
 </div>
 <% end %>
+
+
 
 
 

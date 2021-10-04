@@ -29,13 +29,13 @@ class ResultsController < ApplicationController
     params[:competition_id] = competition_id(params)
 
     @result = Result.new(
-       {
-          place: params[:place].to_i,
-          time: params[:hours].to_i * 3600 + params[:minutes].to_i * 60 + params[:seconds].to_i,
-          category_id: params[:category_id],
-          competition_id: params[:competition_id],
-          runner_id: params[:runner_id]
-        }
+      {
+        place: params[:place].to_i,
+        time: params[:hours].to_i * 3600 + params[:minutes].to_i * 60 + params[:seconds].to_i,
+        category_id: params[:category_id],
+        competition_id: params[:competition_id],
+        runner_id: params[:runner_id]
+      }
     )
 
     respond_to do |format|
@@ -88,7 +88,7 @@ class ResultsController < ApplicationController
   # Only allow a list of trusted parameters through.
   def result_params
     params.require(:result).permit(:place, :runner_id, :hours, :minutes, :seconds, :category_id, :competition_id,
-      :competition_name, :date, :location, :country, :group, :distance_type)
+                                   :competition_name, :date, :location, :country, :group, :distance_type)
   end
 
   def competition_id(params)
