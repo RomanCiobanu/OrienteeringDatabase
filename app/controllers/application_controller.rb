@@ -50,6 +50,6 @@ class ApplicationController < ActionController::Base
   end
 
   def default_competition
-    Competition.find_by(name: 'Fara Competitie')
+    Competition.find(1)
   end
 end
