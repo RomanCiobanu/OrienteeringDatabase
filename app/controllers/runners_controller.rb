@@ -60,6 +60,8 @@ class RunnersController < ApplicationController
         }
       )
       result.save
+      @runner.category_id = get_category(@runner)
+      @runner.save
     end
     respond_to do |format|
       format.html { redirect_to @runner, notice: 'Runner was successfully created.' }
@@ -107,6 +109,9 @@ class RunnersController < ApplicationController
     @categories = Category.all
     @competitions = Competition.all
     @index_array = result_index_array(@runner.results)
+    category = get_category(@runner)
+    @runner.category_id = category.id
+    @runner.save
   end
 
   # Only allow a list of trusted parameters through.
