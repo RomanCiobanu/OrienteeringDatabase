@@ -54,4 +54,8 @@ class ApplicationController < ActionController::Base
   def default_competition
     Competition.find(1)
   end
+
+  def default_club
+    Club.find(1)
+  end
 end

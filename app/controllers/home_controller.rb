@@ -117,7 +117,7 @@ class HomeController < ApplicationController
         'gender' => sheet.cell(index, 'F'),
         'dob' => sheet.cell(index, 'D').to_date.as_json,
         # 'category_id' => Category.find_by(name: sheet.cell(index, 'E')).id || 48,
-        'club_id' => club.id || 11
+        'club_id' => club.id
       }.compact
 
       runner = add_runner_test(runner_hash)
@@ -156,11 +156,6 @@ class HomeController < ApplicationController
     file = File.read(path)
     html = Nokogiri::HTML(file)
 
-    competitions              = []
-    competition_name          = html.css('td.s1')[1].text
-    competition_date          = html.at_css('td.s2').text[/\d{2}.\d{2}.\d{4}/]
-    competition_distance_type = html.css('td.s1')[3].text
-
     @success_competition = []
     @fail_competition    = []
     @success_club = []
@@ -169,10 +164,18 @@ class HomeController < ApplicationController
     @fail_runner    = []
     @success_result = []
     @fail_result = []
-    clubs = []
+
+    parse_html(html)
+  end
+
+  def parse_html(html)
+    competitions              = []
+    competition_name          = html.css('tr')[4].at_css('td').text
+    competition_date          = html.css('tr').detect { |tr| tr.text.match?(/\d{2}.\d{2}.\d{4}/) }.text[/\d{2}.\d{2}.\d{4}/]
+    competition_distance_type = html.css('tr')[7].at_css('td').text
 
     html.css('tr').each_with_index do |row, index|
-      next unless row.text.include?('Categoria de vârstă')
+      next unless row.text.include?('Categoria de v')
 
       competition_hash = {
         name: competition_name,
@@ -181,7 +184,7 @@ class HomeController < ApplicationController
         country: 'Moldova',
         distance_type: competition_distance_type,
         index: index,
-        group: row.at_css('td.s7').text
+        group: row.css('td').reject { |td| td.text.blank? }.second.text
       }.compact
 
       competition_hash[:id] = add_competition(competition_hash).id
@@ -191,20 +194,31 @@ class HomeController < ApplicationController
 
     competitions << { index: html.css('tr').size }
 
-    headers     = html.at_css("tr[style='height:48px']")
-    header_hash = parse_headers(headers)
+    headers      = html.at_css("tr[style='height:48px']")
+    header_array =  table_array(headers)
+    # header_hash = parse_headers(headers)
 
     html.css('tr').each_with_index do |row, index|
       unless row.attribute('style').value == 'height:16px' ||
-             (row.attribute('style').value == 'height:15px' && row.at_css('td').text == '1')
+             (row.attribute('style').value == 'height:15px' && row.at_css('td').text.to_i != 0)
         next
       end
+
+      runner_array = table_array(row)
+      data_hash = {}
+
+      runner_array.each do |a|
+        crit = header_array.detect { |el| el.last == a.last }.first
+        data_hash[crit] = a.first
+      end
+
+      # tds = row.css('td').reject { |td| td.text.blank? }
 
       ind = competitions.index(competitions.detect { |aa| aa[:index] > index }) - 1
       competition = Competition.find(competitions[ind][:id])
 
-      club = add_club({ name: row.css('td')[header_hash[:club]].text }.compact)
-      name, surname = row.css('td')[header_hash[:name]].text.split
+      club = add_club({ name: get_data_hash(data_hash, 'club') }.compact)
+      name, surname = get_data_hash(data_hash, 'name').split
 
       runner_hash = {
         'name' => name,
@@ -216,11 +230,11 @@ class HomeController < ApplicationController
 
       hash_result = {}
       hash_result[:runner_id] = runner.id
-      hash_result[:place] = row.css('td')[header_hash[:place]].text.to_i
-      time_array = row.css('td')[header_hash[:result]].text.split(/:|\./)
+      hash_result[:place] = get_data_hash(data_hash, 'place').to_i
+      time_array = get_data_hash(data_hash, 'result').split(/:|\./)
       hash_result[:time] = time_array.first.to_i * 3600 + time_array[1].to_i * 60 + time_array.last.to_i
       hash_result[:competition_id] = competition.id
-      hash_result[:category_id] = detect_category({ name: row.css('td')[header_hash[:category]].text.gsub('І', 'I') }).id
+      hash_result[:category_id] = detect_category({ name: get_data_hash(data_hash, 'category') }).id
       add_result(hash_result)
     end
   end
@@ -247,19 +261,31 @@ class HomeController < ApplicationController
     competition
   end
 
+  def get_data_hash(data_hash, string)
+    crit = case string
+           when 'place' then /crt|Nr/
+           when 'name' then /Nume(,|) prenume/i
+           when 'result' then /Result|Rezultat/
+           when 'club' then /Echipa/
+           when 'category' then /Cat(eg. sport|)\./
+           end
+
+    data_hash[data_hash.keys.detect { |key| key[crit] }]
+  end
+
   def parse_headers(html)
     header_hash = {}
-    html.css('td').each_with_index do |data, index|
+    html.css('td').reject { |td| td.text.blank? }.each_with_index do |data, index|
       case data.text
-      when /crt/
+      when /crt|Nr/
         header_hash[:place] = index
-      when /Nume, prenume/
+      when /Nume(,|) prenume/i
         header_hash[:name] = index
-      when /Result/
+      when /Result|Rezultat/
         header_hash[:result] = index
       when /Echipa/
         header_hash[:club] = index
-      when /Cat\./
+      when /Cat(eg. sport|)\./
         header_hash[:category] = index
       end
     end
@@ -267,7 +293,7 @@ class HomeController < ApplicationController
   end
 
   def add_club(club)
-    return if club.blank?
+    return default_club if club.blank?
 
     club_id = Club.find_by(name: club[:name])
 
@@ -288,8 +314,8 @@ class HomeController < ApplicationController
     runner_id = Runner.find_by(name: name, surname: surname)
     return runner_id if runner_id
 
-    club_id     = club ? club.id : 48
-    category_id = category ? category.id : 11
+    club_id     = club ? club.id : default_club.id
+    category_id = category ? category.id : default_category.id
 
     new_runner = Runner.new({ name: name, surname: surname, club_id: club_id, category_id: category_id, gender: gender })
     if new_runner.save
@@ -327,6 +353,21 @@ class HomeController < ApplicationController
   end
 
   def detect_category(hash)
+    return Category.find(11) unless hash.values.first
+
+    hash.values.first.gsub!('І', 'I')
     Category.find_by(hash) || Category.find(11)
+  end
+
+  def table_array(html)
+    colspan = 0
+    html.css('td').map do |td|
+      size = td['colspan'] ? td['colspan'].to_i : 1
+      position = colspan
+      colspan += size
+      next if td.text.blank?
+
+      [td.text, position]
+    end.compact
   end
 end
