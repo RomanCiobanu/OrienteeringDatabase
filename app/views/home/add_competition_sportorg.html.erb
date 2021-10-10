@@ -1,0 +1,19 @@
+<%= @error_hash %>
+<%= form_tag competition_sportorg_path, multipart: true  do %>
+<label for="id">File Path</label>
+<%= file_field_tag :path %>
+<%= submit_tag "Submit" %>
+<% end %>
+Competitions
+<p>success: <%= @success_competition %></p>
+<p>fail: <%= @fail_cometition %></p>
+Runners
+<p>success: <%= @success_runner %></p>
+<p>fail: <%= @fail_runner %></p>
+Results
+<p>success: <%= @success_result %></p>
+<p>fail: <%= @fail_result %></p>
+<%=  @hash_result %>
+<%=  @aaa %>
+<%=  @asd %>
+<%=  @aab %>
