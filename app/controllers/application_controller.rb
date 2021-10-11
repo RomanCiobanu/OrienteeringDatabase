@@ -27,8 +27,37 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def competition_index_array(competitions)
+    competitions.map do |competition|
+      [
+        competition,
+        ['Name', 'name', competition.name],
+        ['Date', 'date', competition.date],
+        ['Location', 'location', competition.location],
+        ['Country', 'country', competition.country],
+        ['Group', 'group', competition.group],
+        ['Distance Type', 'distance_type', competition.distance_type],
+        ['Rang', 'rang', competition.rang]
+      ]
+    end
+  end
+
+  def club_index_array(clubs)
+    clubs.map do |club|
+      [
+        club,
+        ['Name', 'name', club.name],
+        ['Territory', 'territory', club.territory],
+        ['Representative', 'representative', club.representative],
+        ['Email', 'email', club.email],
+        ['Phone', 'phone', club.phone],
+        ['Runners', 'runners.count', club.runners.count]
+      ]
+    end
+  end
+
   def get_category(runner, from_date = 2.years.ago, to_date = Time.now)
-    return Category.find(11) if runner.results.blank?
+    return default_category if runner.results.blank?
 
     Category.find(runner.results.select { |result| (from_date..to_date).include?(result.competition.date) }
       .map(&:category_id).uniq.min)
@@ -48,11 +77,11 @@ class ApplicationController < ActionController::Base
   end
 
   def default_category
-    Category.find(11)
+    Category.find(10)
   end
 
   def default_competition
-    Competition.find(1)
+    Competition.find(0)
   end
 
   def default_club

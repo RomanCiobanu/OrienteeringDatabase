@@ -4,18 +4,7 @@ class CompetitionsController < ApplicationController
   # GET /competitions or /competitions.json
   def index
     @competitions = Competition.all
-    @index_array = sort_table(@competitions).map do |competition|
-      [
-        competition,
-        ['Name', 'name', competition.name],
-        ['Date', 'date', competition.date],
-        ['Location', 'location', competition.location],
-        ['Country', 'country', competition.country],
-        ['Group', 'group', competition.group],
-        ['Distance Type', 'distance_type', competition.distance_type],
-        ['Rang', 'rang', competition.rang]
-      ]
-    end
+    @index_array = competition_index_array(sort_table(@competitions))
   end
 
   # GET /competitions/1 or /competitions/1.json

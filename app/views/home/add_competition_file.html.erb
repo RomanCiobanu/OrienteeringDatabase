@@ -4,17 +4,47 @@
 <%= file_field_tag :path %>
 <%= submit_tag "Submit" %>
 <% end %>
-Competitions
-<p>success: <%= @success_competition %></p>
-<p>fail: <%= @fail_cometition %></p>
-Runners
-<p>success: <%= @success_runner %></p>
-<p>fail: <%= @fail_runner %></p>
-Results
-<p>success: <%= @success_result %></p>
-<p>fail: <%= @fail_result %></p>
-<%=  @hash_result %>
-<%=  @aaa %>
-
-
-
+<% if @competition_index %>
+<h3>Added Competitions</h3>
+<% @index_array = @competition_index %>
+</p>
+<%= render partial: '/layouts/index'%>
+<% end %>
+<% if @fail_competition %>
+<p>
+    <%= @fail_cometition %>
+</p>
+<% end %>
+<% if @runner_index %>
+<h3>Added Runners</h3>
+<% @index_array = @runner_index %>
+</p>
+<%= render partial: '/layouts/index'%>
+<% end %>
+<% if @fail_competition %>
+<p>
+    <%= @fail_runner %>
+</p>
+<% end %>
+<% if @result_index %>
+<h3>Added Results</h3>
+<% @index_array = @result_index %>
+</p>
+<%= render partial: '/layouts/index'%>
+<% end %>
+<% if @fail_result %>
+<p>
+    <%= @fail_result %>
+</p>
+<% end %>
+<% if @club_index %>
+<h3>Added Clubs</h3>
+<% @index_array = @club_index %>
+</p>
+<%= render partial: '/layouts/index'%>
+<% end %>
+<% if @fail_club %>
+<p>
+    <%= @fail_club %>
+</p>
+<% end %>

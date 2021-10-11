@@ -4,7 +4,7 @@ class ClubsController < ApplicationController
   # GET /clubs or /clubs.json
   def index
     @clubs = Club.all
-    @index_array = index_array
+    @index_array = club_index_array(sort_table(@clubs))
   end
 
   # GET /clubs/1 or /clubs/1.json
@@ -74,16 +74,6 @@ class ClubsController < ApplicationController
   end
 
   def index_array
-    sort_table(@clubs).map do |club|
-      [
-        club,
-        ['Name', 'name', club.name],
-        ['Territory', 'territory', club.territory],
-        ['Representative', 'representative', club.representative],
-        ['Email', 'email', club.email],
-        ['Phone', 'phone', club.phone],
-        ['Runners', 'runners.count', club.runners.count]
-      ]
-    end
+    sort_table(@clubs)
   end
 end
