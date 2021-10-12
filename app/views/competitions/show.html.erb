@@ -7,6 +7,10 @@
 ]
 
 %>
+
+
 <%= render partial: '/layouts/show', :locals => { :elements => fields} %>
+<%= button_tag :class => "btn btn-warning", :name => 'count' do %> Delete selected <% end %>
+<br>
 <%= render partial: '/layouts/index'%>
 <%= render partial: '/layouts/show_actions', :locals => { :element => fields.first} %>

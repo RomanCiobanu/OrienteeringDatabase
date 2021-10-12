@@ -9,7 +9,9 @@ class CompetitionsController < ApplicationController
 
   # GET /competitions/1 or /competitions/1.json
   def show
-    @competition.rang = @competition.results.map { |result| get_category(result.runner).points }.sum
+    return unless params[:count]
+
+    @competition.rang = @competition.results.sort_by(&:place).first(12).map { |result| get_category(result.runner).points }.sum
 
     @competition.save
   end

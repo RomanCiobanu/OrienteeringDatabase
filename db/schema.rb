@@ -43,7 +43,7 @@ ActiveRecord::Schema.define(version: 2021_10_10_194302) do
   end
 
   create_table "results", force: :cascade do |t|
-    t.string "place"
+    t.integer "place"
     t.integer "runner_id"
     t.integer "time", default: 0
     t.integer "category_id"
@@ -60,7 +60,7 @@ ActiveRecord::Schema.define(version: 2021_10_10_194302) do
     t.string "surname"
     t.date "dob"
     t.integer "category_id", default: 10
-    t.integer "club_id", default: 48
+    t.integer "club_id", default: 1
     t.string "gender"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
