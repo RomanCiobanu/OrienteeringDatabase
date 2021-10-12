@@ -70,4 +70,15 @@ class HomeController < ApplicationController
     @result_index      = result_index_array(@success_result)
     @club_indx         = club_index_array(@success_club)
   end
+
+  def count_rang(competition= nil)
+    @aaa = "dsa"
+    competition = Competition.find(params[:format])
+
+    competition.rang = competition.results.sort_by(&:place).first(12).map { |result| get_category(result.runner).points }.sum
+
+    competition.save
+
+    redirect_to competition_path(competition)
+  end
 end
