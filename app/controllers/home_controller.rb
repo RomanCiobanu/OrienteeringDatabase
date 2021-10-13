@@ -80,7 +80,7 @@ class HomeController < ApplicationController
     winner_time = competition_results.first.time
     time_hash   = hash.map { |k,v| [k, v*winner_time/100] }.to_h
     time_hash = case competition.clasa
-    when "MSRM" || "CMSRM" then time_hash.slice(:"3", :"4", :"5", :"6")
+    when "MSRM", "CMSRM" then time_hash.slice(:"3", :"4", :"5", :"6")
     when "Seniori" then time_hash.slice(:"4", :"5", :"6")
     when "Juniori" then time_hash.slice(:"7", :"8", :"9")
     end

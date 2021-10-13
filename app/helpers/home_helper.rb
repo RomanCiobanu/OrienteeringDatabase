@@ -140,6 +140,18 @@ module HomeHelper
         }.compact
 
         competition = add_competition(competition_hash)
+        next
+      end
+
+      if row.text.match?(/clas(a|s) dist/i)
+        competition.clasa = case row.at_css("td.s15").text
+        when "MSRM" then "MSRM"
+        when "CMSRM" then "CMSRM"
+        when /juniori/ then "Juniori"
+        else "Seniori"
+        end
+        competition.save
+        next
       end
 
       unless row.attribute('style').value == 'height:16px' ||
