@@ -72,12 +72,51 @@ class HomeController < ApplicationController
   end
 
   def count_rang(competition= nil)
-    @aaa = "dsa"
-    competition = Competition.find(params[:format])
-
-    competition.rang = competition.results.sort_by(&:place).first(12).map { |result| get_category(result.runner).points }.sum
-
+    competition      = Competition.find(params[:format])
+    competition.rang = get_competition_rang(competition)
     competition.save
+    competition_results = competition.results.sort_by(&:place)
+    hash        = get_rang_percents(competition.rang)
+    winner_time = competition_results.first.time
+    time_hash   = hash.map { |k,v| [k, v*winner_time/100] }.to_h
+    time_hash = case competition.clasa
+    when "MSRM" || "CMSRM" then time_hash.slice(:"3", :"4", :"5", :"6")
+    when "Seniori" then time_hash.slice(:"4", :"5", :"6")
+    when "Juniori" then time_hash.slice(:"7", :"8", :"9")
+    end
+
+    competition_results.each do |result|
+      time     = result.time
+      category = time_hash.detect  { |k,v| v >= time }
+      result.category_id = category ? category.first.to_s.to_i : default_category
+
+      result.save
+    end
+
+
+    if ["CMSRM", "MSRM"].include?(competition.clasa) && competition.rang >=120 &&
+      competition_results.select {|result| get_category(result.runner, competition.date - 1.day).id <= 3}.size > 2
+      results         = competition_results.first(3)
+      res             = results.first
+      res.category_id = if competition.clasa == "MSRM" &&
+        competition_results.select {|result| get_category(result.runner, competition.date - 1.day).id <= 2}.size > 2
+        2
+      else
+        3
+      end
+
+      res.save
+
+      results[1..2].each do |res|
+        res.category_id = 3
+        res.save
+      end
+    else
+      competition_results.select {|result| get_category(result.runner, competition.date - 1.day).id <= 3}.each do |res|
+        res.category_id = 4
+        res.save
+      end
+    end
 
     redirect_to competition_path(competition)
   end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_10_10_194302) do
+ActiveRecord::Schema.define(version: 2021_10_12_175859) do
 
   create_table "categories", force: :cascade do |t|
     t.string "name"
@@ -40,6 +40,7 @@ ActiveRecord::Schema.define(version: 2021_10_10_194302) do
     t.float "rang"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "clasa"
   end
 
   create_table "results", force: :cascade do |t|

@@ -51,7 +51,7 @@ module HomeHelper
         category_id = convert_category(runner['qual'])
         new_runner  = add_runner(runner_hash, category_id)
         result      = json['results'].detect { |res| res['person_id'] == runner['id'] }
-        next if result['place'].to_i < 1
+        next if result.nil? || result['place'].to_i < 1
 
         result_hash = {
           runner_id: new_runner.id,
@@ -365,5 +365,9 @@ module HomeHelper
       [1,    { "3": nil, "4": nil, "5": nil, "6": 100, "7": nil, "8": 105, "9": 120 }.compact],
       [0.5,  { "3": nil, "4": nil, "5": nil, "6": nil, "7": nil, "8": nil, "9": 105 }.compact]
     ]
+  end
+
+  def get_rang_percents(rang)
+    rang_array.detect { |row| row.first < rang }.last
   end
 end

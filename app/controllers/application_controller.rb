@@ -56,10 +56,10 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def get_category(runner, from_date = 2.years.ago, to_date = Time.now)
+  def get_category(runner, date = Time.now)
     return default_category if runner.results.blank?
 
-    Category.find(runner.results.select { |result| (from_date..to_date).include?(result.competition.date) }
+    Category.find(runner.results.select { |result| ((date - 2.years)..date).cover?(result.competition.date) }
       .map(&:category_id).uniq.min)
   end
 
@@ -86,5 +86,9 @@ class ApplicationController < ActionController::Base
 
   def default_club
     Club.find(1)
+  end
+
+  def get_competition_rang(competition)
+    competition.results.sort_by(&:place).first(12).map { |result| get_category(result.runner, competition.date - 1.day).points }.sum
   end
 end

@@ -3,14 +3,14 @@
   @competition,
   ["name"],
   [["date"], ["location"], ["country"]],
-  ["group", "distance_type", "rang" ]
+  ["group", "distance_type", "rang", "clasa" ]
 ]
 
 %>
 
 
 <%= render partial: '/layouts/show', :locals => { :elements => fields} %>
-<td><%= link_to 'COunt', rang_path(@competition) , class: "btn btn-warning btn-sm"%></td>
+<td><%= link_to 'Count', rang_path(@competition) , class: "btn btn-warning btn-sm"%></td>
 
 <br>
 <%= render partial: '/layouts/index'%>
