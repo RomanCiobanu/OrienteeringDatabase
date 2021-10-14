@@ -191,15 +191,19 @@ module HomeHelper
   end
 
   def add_competition(hash)
-    @hash = hash
+    hash[:date] = hash[:date].to_date.as_json
+
     competition_hash = {
       'name' => hash[:name],
-      'date' => hash[:date].to_date.as_json,
+      'date' => hash[:date],
       'location' => hash[:location],
       'country' => hash[:country],
       'distance_type' => hash[:distance_type],
       'group' => hash[:group]
     }
+
+    competition = Competition.find_by(hash.slice(:name, :date, :group, :distance_type))
+    return competition if competition
 
     competition = Competition.new(competition_hash)
 
@@ -254,6 +258,8 @@ module HomeHelper
   end
 
   def add_result(hash)
+    return if Result.find_by(hash.slice(:runner_id, :competition_id))
+
     new_result = Result.new(hash)
 
     if new_result.save
@@ -310,9 +316,6 @@ module HomeHelper
     end
   end
 
-  def set_runners
-    show_wins(3, 2)
-  end
 
   def show_wins(one, two)
     @runner_one = Runner.find(one)
@@ -341,6 +344,18 @@ module HomeHelper
         @runner_two_wins += 1
       end
     end
+  end
+
+  def merge_results(one, two)
+    runner_one = Runner.find(one)
+    runner_two = Runner.find(two)
+
+    runner_two.results.each do |result|
+      result.runner_id = runner_one.id
+      result.save
+    end
+
+    runner_two.destroy
   end
 
   def rang_array

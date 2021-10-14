@@ -46,8 +46,16 @@ class HomeController < ApplicationController
 
   def compare
     @runners = Runner.all
-
+    @runner = Runner.find(params[:format]) if params[:format]
     show_wins(params[:first_name], params[:second_name]) if params[:first_name] && params[:second_name]
+  end
+  def merge
+    @runners = Runner.all
+    @runner = Runner.find(params[:format]) if params[:format]
+    return unless params[:first_name] && params[:second_name]
+    merge_results(params[:first_name], params[:second_name])
+
+    redirect_to runner_path(Runner.find(params[:first_name]))
   end
 
   def add_competition_file
@@ -71,7 +79,7 @@ class HomeController < ApplicationController
     @club_index         = club_index_array(@success_club)
   end
 
-  def count_rang(competition= nil)
+  def count_rang
     competition      = Competition.find(params[:format])
     competition.rang = get_competition_rang(competition)
     competition.save
