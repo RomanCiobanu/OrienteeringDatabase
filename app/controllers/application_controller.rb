@@ -60,7 +60,7 @@ class ApplicationController < ActionController::Base
     return default_category if runner.results.blank?
 
     Category.find(runner.results.select { |result| ((date - 2.years)..date).cover?(result.competition.date) }
-      .map(&:category_id).uniq.min)
+      .map(&:category_id).uniq.min) rescue default_category
   end
 
   def sort_table(elements)

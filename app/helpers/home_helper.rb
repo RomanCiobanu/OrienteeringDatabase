@@ -221,9 +221,9 @@ module HomeHelper
 
     new_club = Club.new(club)
     if new_club.save
-      @success_club << club
+      @success_club << new_club
     else
-      @fail_club << club
+      @fail_club << new_club
     end
 
     new_club

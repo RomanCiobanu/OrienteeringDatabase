@@ -13,10 +13,6 @@ Rails.application.routes.draw do
   get 'home/addcompetition', as: "addcompetition"
   get 'home/add_competition_file', as: "competition_file"
   post 'home/add_competition_file', as: "competition_file_post"
-  get 'home/add_runners_file', as: "runner_file"
-  post 'home/add_runners_file', as: "runner_file_post"
-  get 'home/add_competition_sportorg', as: "competition_sportorg"
-  post 'home/add_competition_sportorg', as: "competition_sportorg_post"
   get 'home/count_rang', as: "rang"
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
 end

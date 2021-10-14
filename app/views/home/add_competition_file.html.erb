@@ -10,7 +10,7 @@
 </p>
 <%= render partial: '/layouts/index'%>
 <% end %>
-<% if @fail_competition %>
+<% unless @fail_competition.blank? %>
 <p>
     <%= @fail_cometition %>
 </p>
@@ -21,7 +21,7 @@
 </p>
 <%= render partial: '/layouts/index'%>
 <% end %>
-<% if @fail_competition %>
+<% unless @fail_runner.blank? %>
 <p>
     <%= @fail_runner %>
 </p>
@@ -32,7 +32,7 @@
 </p>
 <%= render partial: '/layouts/index'%>
 <% end %>
-<% if @fail_result %>
+<% unless @fail_result.blank? %>
 <p>
     <%= @fail_result %>
 </p>
@@ -43,7 +43,7 @@
 </p>
 <%= render partial: '/layouts/index'%>
 <% end %>
-<% if @fail_club %>
+<% unless @fail_club.blank? %>
 <p>
     <%= @fail_club %>
 </p>

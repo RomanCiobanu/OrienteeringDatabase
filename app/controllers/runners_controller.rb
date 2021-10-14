@@ -3,7 +3,8 @@ class RunnersController < ApplicationController
 
   # GET /runners or /runners.json
   def index
-    Runner.all.each do |runner|
+    all_runners = Runner.all
+    all_runners.all.each do |runner|
       category = get_category(runner)
       runner.category_id = category.id
       runner.save
@@ -12,7 +13,7 @@ class RunnersController < ApplicationController
       if params[:search]
         Runner.where("name LIKE '%#{params[:search]}%'").or(Runner.where("surname LIKE '%#{params[:search]}%'"))
       else
-        Runner.all
+        all_runners
       end.paginate(page: params[:page], per_page: 30)
     @runners = if params[:sort]&.include?('.')
                  @runners.joins(params[:sort].split('.').first.singularize.to_sym).order(params[:sort])

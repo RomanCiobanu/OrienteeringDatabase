@@ -68,7 +68,7 @@ class HomeController < ApplicationController
     @competition_index = competition_index_array(@success_competition)
     @runner_index      = runners_index_array(@success_runner)
     @result_index      = result_index_array(@success_result)
-    @club_indx         = club_index_array(@success_club)
+    @club_index         = club_index_array(@success_club)
   end
 
   def count_rang(competition= nil)
