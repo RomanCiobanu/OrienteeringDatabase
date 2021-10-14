@@ -37,7 +37,8 @@ class ApplicationController < ActionController::Base
         ['Country', 'country', competition.country],
         ['Group', 'group', competition.group],
         ['Distance Type', 'distance_type', competition.distance_type],
-        ['Rang', 'rang', competition.rang]
+        ['Rang', 'rang', competition.rang],
+        ['Class', 'clasa', competition.clasa]
       ]
     end
   end

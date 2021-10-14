@@ -1,2 +1,24 @@
 <h1>Welcome to the orienteering database </h1>
-<h1>We have <%=link_to "#{@runners_count} runners", runners_path %> from <%=link_to "#{@clubs_count} clubs", clubs_path %>
+
+
+<table class="table table-bordered ">
+  <thead>
+    <tr class = "table-primary">
+      <th scope="col">Runners</th>
+      <th scope="col">Clubs</th>
+      <th scope="col">Results</th>
+      <th scope="col">Competitions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><%=link_to "#{@runners_count}", runners_path %></td>
+      <td><%=link_to "#{@clubs_count}", clubs_path %></td>
+      <td><%=link_to "#{@results_count}", results_path %></td>
+      <td><%=link_to "#{@competitions_count}", competitions_path %></td>
+    </tr>
+  </tbody>
+</table>
+<h1> Last 5 Competitions</h1>
+<%= render partial: '/layouts/index'%>
+

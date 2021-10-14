@@ -2,12 +2,12 @@ class HomeController < ApplicationController
   include HomeHelper
 
   def index
-    @clubs_count = Club.count
-    @runners_count = Runner.count
+    @clubs_count        = Club.count
+    @runners_count      = Runner.count
+    @competitions_count = Competition.count
+    @results_count      = Result.count
 
-    # runner_one = Runner.order('RANDOM()').first.id
-    # runner_two = Runner.order('RANDOM()').last.id
-    # show_wins(runner_one, runner_two)
+    @index_array        = competition_index_array(Competition.order("date desc").limit(10))
   end
 
   def about
