@@ -1,0 +1,24 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @group.name %>
+</p>
+
+<p>
+  <strong>Clasa:</strong>
+  <%= @group.clasa %>
+</p>
+
+<p>
+  <strong>Rang:</strong>
+  <%= @group.rang %>
+</p>
+
+<p>
+  <strong>Competition:</strong>
+  <%= @group.competition %>
+</p>
+
+<%= link_to 'Edit', edit_group_path(@group) %> |
+<%= link_to 'Back', groups_path %>
