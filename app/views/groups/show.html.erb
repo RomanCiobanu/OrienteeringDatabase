@@ -1,24 +1,18 @@
-<p id="notice"><%= notice %></p>
 
-<p>
-  <strong>Name:</strong>
-  <%= @group.name %>
-</p>
+<% fields = [
+  @group,
+  ["name"],
+  [["competition", "name", "link"], ["date", "competition", "el_date"]],
+  ["clasa", "rang"],
+]
 
-<p>
-  <strong>Clasa:</strong>
-  <%= @group.clasa %>
-</p>
+%>
 
-<p>
-  <strong>Rang:</strong>
-  <%= @group.rang %>
-</p>
 
-<p>
-  <strong>Competition:</strong>
-  <%= @group.competition %>
-</p>
+<%= render partial: '/layouts/show', :locals => { :elements => fields} %>
+<td><%= link_to 'Count', rang_path(@group) , class: "btn btn-warning btn-sm"%></td>
 
-<%= link_to 'Edit', edit_group_path(@group) %> |
-<%= link_to 'Back', groups_path %>
+
+<br>
+<%= render partial: '/layouts/index'%>
+<%= render partial: '/layouts/show_actions', :locals => { :element => fields.first} %>

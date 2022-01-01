@@ -1,0 +1,15 @@
+current directory: /home/roma/Desktop/rails/OrienteeringDatabase/vendor/bundle/ruby/2.7.0/gems/bindex-0.8.1/ext/skiptrace
+/home/roma/.rvm/rubies/ruby-2.7.0/bin/ruby -I /home/roma/.rvm/rubies/ruby-2.7.0/lib/ruby/2.7.0 -r ./siteconf20220101-59431-1tgqcc.rb extconf.rb
+creating Makefile
+
+current directory: /home/roma/Desktop/rails/OrienteeringDatabase/vendor/bundle/ruby/2.7.0/gems/bindex-0.8.1/ext/skiptrace
+make "DESTDIR=" clean
+
+current directory: /home/roma/Desktop/rails/OrienteeringDatabase/vendor/bundle/ruby/2.7.0/gems/bindex-0.8.1/ext/skiptrace
+make "DESTDIR="
+compiling cruby.c
+linking shared-object skiptrace/internal/cruby.so
+
+current directory: /home/roma/Desktop/rails/OrienteeringDatabase/vendor/bundle/ruby/2.7.0/gems/bindex-0.8.1/ext/skiptrace
+make "DESTDIR=" install
+/usr/bin/install -c -m 0755 cruby.so ./.gem.20220101-59431-1gtr6vv/skiptrace/internal

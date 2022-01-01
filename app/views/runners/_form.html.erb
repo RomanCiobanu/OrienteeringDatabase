@@ -55,13 +55,13 @@ function competition_visibility(text) {
   ["date", [], "date"],
   ["location", "text"],
   ["country", "text"],
-  ["group", "text"],
-  ["distance_type", "text"],
+  ["distance_type", "text"]
   ]
 
   results_fields = [
   ["competition", @competitions, ["name", "distance_type"], "id"],
   ["place", "number"],
-  ["duration"]
+  ["duration"],
+  ["groups", "text"]
   ] %>
 <%= render partial: '/layouts/form', :locals => { elements: fields, model: runner, competition_extra: competition_fields,  results_exta: results_fields, hidden: true} %>

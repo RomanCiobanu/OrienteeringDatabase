@@ -22,12 +22,7 @@ class CompetitionsController < ApplicationController
 
   # POST /competitions or /competitions.json
   def create
-    params = competition_params
-    # params[:rang] = competition_params[:result].map do |result|
-    #   get_category(result.runner, competition.date - 1.day, competition.date - 2.years).points
-    # end.sum
-
-    @competition = Competition.new(params)
+    @competition = Competition.new(competition_params)
 
     respond_to do |format|
       if @competition.save
@@ -69,11 +64,11 @@ class CompetitionsController < ApplicationController
   # Use callbacks to share common setup or constraints between actions.
   def set_competition
     @competition = Competition.find(params[:id])
-    @index_array = result_index_array(@competition.results)
+    @index_array = group_index_array(@competition.groups)
   end
 
   # Only allow a list of trusted parameters through.
   def competition_params
-    params.require(:competition).permit(:name, :date, :location, :country, :group, :distance_type, :rang, :clasa)
+    params.require(:competition).permit(:name, :date, :location, :country, :distance_type)
   end
 end

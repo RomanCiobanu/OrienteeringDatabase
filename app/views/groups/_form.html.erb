@@ -1,37 +1,39 @@
-<%= form_with(model: group) do |form| %>
-  <% if group.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(group.errors.count, "error") %> prohibited this group from being saved:</h2>
+<script>
+function hide(selector) {
+    obj = document.getElementById(selector).setAttribute("hidden", true);
+}
 
-      <ul>
-        <% group.errors.each do |error| %>
-          <li><%= error.full_message %></li>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
+function show(selector) {
+    obj = document.getElementById(selector).removeAttribute("hidden");
+}
 
-  <div class="field">
-    <%= form.label :name %>
-    <%= form.text_field :name %>
-  </div>
+function visibility(text) {
+    if (text == "create-competition") {
+        competition_visibility(text);
+    } else {
+        result_visibility(text);
+    }
+}
 
-  <div class="field">
-    <%= form.label :clasa %>
-    <%= form.text_field :clasa %>
-  </div>
+function competition_visibility(text) {
+    aaa = document.getElementById("group_competition_id").value;
+    if (aaa == "New") { show(text); } else { hide(text); }
+}
+</script>
 
-  <div class="field">
-    <%= form.label :rang %>
-    <%= form.text_field :rang %>
-  </div>
 
-  <div class="field">
-    <%= form.label :competition %>
-    <%= form.text_field :competition %>
-  </div>
 
-  <div class="actions">
-    <%= form.submit %>
-  </div>
-<% end %>
+<% fields = [
+    ["name", "text"],
+    ["clasa", ["MSRM", "CMSRM", "Seniori", "Juniori"], "select"],
+    ["competition", @competitions, ["name"], "id"],
+  ]%>
+<% competition_fields = [
+  ["competition_name", "text"],
+  ["date", [], "date"],
+  ["location", "text"],
+  ["country", "text"],
+  ["distance_type", "text"],
+] %>
+<%= render partial: '/layouts/form', :locals => { :elements => fields, :model => group, :competition_extra => competition_fields, :hidden => false } %>
+

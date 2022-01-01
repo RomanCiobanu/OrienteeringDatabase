@@ -1,3 +1,3 @@
 class Competition < ApplicationRecord
-  has_many :results
+  has_many :groups
 end

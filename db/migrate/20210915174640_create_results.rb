@@ -4,8 +4,8 @@ class CreateResults < ActiveRecord::Migration[6.1]
       t.integer :place
       t.references :runner
       t.integer :time, default: 0
-      t.references :category
-      t.references :competition
+      t.references :category, default: 0
+      t.references :group, default: 0
 
       t.timestamps
     end

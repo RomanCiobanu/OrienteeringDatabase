@@ -1,7 +1,7 @@
 module HomeHelper
   def parse_data(path)
     if path[/(xlsx|xlx|ods)$/]
-      file = Roo::Spreadsheet.open(path)
+      file  = Roo::Spreadsheet.open(path)
       sheet = file.sheet(0)
       parse_excel(sheet)
     else
@@ -16,21 +16,20 @@ module HomeHelper
   end
 
   def parse_json(json)
-    competition_name = json.dig('data', 'title')
-    competition_date = json.dig('data', 'start_datetime').to_date.as_json
-    competition_location = json.dig('data', 'location')
+    competition_hash = {
+      name:     json.dig('data', 'title'),
+      date:     json.dig('data', 'start_datetime').to_date.as_json,
+      location: json.dig('data', 'location')
+    }
+
+    comp_id = add_competition(competition_hash).id
 
     json['groups'].each do |group|
-      competition_hash = {
-        name: competition_name,
-        date: competition_date,
-        location: competition_location,
-        country: 'Moldova',
-        distance_type: 'default',
-        group: group['name']
+      group_hash = {
+        name:           group['name'],
+        competition_id: comp_id
       }.compact
-
-      competition_id = add_competition(competition_hash).id
+      group_id = add_group(group_hash).id
 
       json['persons'].select { |pers| pers['group_id'] == group['id'] }.each do |runner|
         club = json['organizations'].detect { |org| org['id'] == runner['organization_id'] }
@@ -54,13 +53,12 @@ module HomeHelper
         next if result.nil? || result['place'].to_i < 1
 
         result_hash = {
-          runner_id: new_runner.id,
-          place: result['place'],
-          time: result['result_msec'] / 1000,
-          competition_id: competition_id,
+          runner_id:   new_runner.id,
+          place:       result['place'],
+          time:        result['result_msec'] / 1000,
+          group_id:    group_id,
           category_id: default_category.id
-
-        }
+        }.compact
         add_result(result_hash)
       end
     end
@@ -85,7 +83,6 @@ module HomeHelper
         'surname' => sheet.cell(index, 'C'),
         'gender' => sheet.cell(index, 'F'),
         'dob' => sheet.cell(index, 'D').to_date.as_json,
-        # 'category_id' => Category.find_by(name: sheet.cell(index, 'E')).id || 48,
         'club_id' => club.id
       }.compact
 
@@ -98,59 +95,62 @@ module HomeHelper
         country: sheet.cell(index, 'M'),
         distance_type: sheet.cell(index, 'K'),
         group: sheet.cell(index, 'J')
-      }
+      }.compact
 
       competition = add_competition(competition_hash)
+
+      group_hash = {
+        competition_id: competition.id,
+        name: sheet.cell(index, 'J')
+      }.compact
+
+      group_id    = add_group(group_hash).id
       category_id = detect_category({ name: sheet.cell(index, 'G') }).id
+      time        = sheet.cell(index, 'N') + 1 if sheet.cell(index, 'N')
 
-      time = sheet.cell(index, 'N') + 1 if sheet.cell(index, 'N')
-
-      if competition.results.new({
-        runner_id: runner.id,
+      result_hash = {
+        runner_id:    runner.id,
         category_id: category_id,
-        place: sheet.cell(index, 'O'),
-        time: time
-      }.compact).save
-        @success_result << runner
-      else
-        @fail_result << runner
-      end
+        place:       sheet.cell(index, 'O'),
+        time:        time,
+        group_id:    group_id,
+      }.compact
+
+      add_result(result_hash)
     end
   end
 
   def parse_html(html)
-    competition_name          = html.css('tr')[4].at_css('td').text
-    competition_date          = html.css('tr').detect { |tr| tr.text.match?(/\d{2}.\d{2}.\d{4}/) }
-                                    .text[/\d{2}.\d{2}.\d{4}/]
-    competition_distance_type = html.css('tr')[7].at_css('td').text
+    competition_hash = {
+      name:          html.css('tr')[4].at_css('td').text,
+      date:          html.css('tr').detect { |tr| tr.text.match?(/\d{2}.\d{2}.\d{4}/) }.text[/\d{2}.\d{2}.\d{4}/],
+      distance_type: html.css('tr')[7].at_css('td').text
+    }
+    competition_id = add_competition(competition_hash).id
+
     headers = html.at_css("tr[style='height:48px']")
     header_array =  table_array(headers)
-    competition = ''
+    group = default_group
 
     html.css('tr').each_with_index do |row, index|
       if row.text.include?('Categoria de v')
-        competition_hash = {
-          name: competition_name,
-          date: competition_date,
-          location: nil,
-          country: 'Moldova',
-          distance_type: competition_distance_type,
-          index: index,
-          group: row.css('td').reject { |td| td.text.blank? }.second.text
+        group_hash = {
+          competition_id: competition_id,
+          name:           row.css('td').reject { |td| td.text.blank? }.second.text
         }.compact
 
-        competition = add_competition(competition_hash)
+        group = add_group(group_hash)
         next
       end
 
       if row.text.match?(/clas(a|s) dist/i)
-        competition.clasa = case row.at_css("td.s15").text
+        group.clasa = case row.at_css("td.s15").text
         when "MSRM" then "MSRM"
         when "CMSRM" then "CMSRM"
         when /juniori/ then "Juniori"
         else "Seniori"
         end
-        competition.save
+        group.save
         next
       end
 
@@ -169,124 +169,25 @@ module HomeHelper
 
       club = add_club({ name: get_data_hash(data_hash, 'club') }.compact)
       name, surname = get_data_hash(data_hash, 'name').split
-
       runner_hash = {
         'name' => name,
         'surname' => surname,
         'club_id' => club.id,
-        'gender' => competition.group.first
-      }
+        'gender' => group.name.first
+      }.compact
+      runner = add_runner(runner_hash, detect_category({ name: get_data_hash(data_hash, 'current_category')}).id)
 
-      runner = add_runner(runner_hash, detect_category({ name: get_data_hash(data_hash, 'current_category') }).id)
-
-      hash_result = {}
-      hash_result[:runner_id] = runner.id
-      hash_result[:place] = get_data_hash(data_hash, 'place').to_i
       time_array = get_data_hash(data_hash, 'result').split(/:|\./)
-      hash_result[:time] = time_array.first.to_i * 3600 + time_array[1].to_i * 60 + time_array.last.to_i
-      hash_result[:competition_id] = competition.id
-      hash_result[:category_id] = detect_category({ name: get_data_hash(data_hash, 'category') }).id
+
+      hash_result = {
+        runner_id:   runner.id,
+        place:       get_data_hash(data_hash, 'place').to_i,
+        time:        time_array.first.to_i * 3600 + time_array[1].to_i * 60 + time_array.last.to_i,
+        group_id:    group.id,
+        category_id: detect_category({ name: get_data_hash(data_hash, 'category') }).id
+      }.compact
       add_result(hash_result)
     end
-  end
-
-  def add_competition(hash)
-    hash[:date] = hash[:date].to_date.as_json
-
-    competition_hash = {
-      'name' => hash[:name],
-      'date' => hash[:date],
-      'location' => hash[:location],
-      'country' => hash[:country],
-      'distance_type' => hash[:distance_type],
-      'group' => hash[:group]
-    }
-
-    competition = Competition.find_by(hash.slice(:name, :date, :group, :distance_type))
-    return competition if competition
-
-    competition = Competition.new(competition_hash)
-
-    if competition.save
-      @success_competition << competition
-    else
-      @fail_competition << competition
-    end
-
-    competition
-  end
-
-  def add_club(club)
-    return default_club if club.blank?
-
-    club_id = Club.find_by(name: club[:name])
-
-    return club_id if club_id
-
-    new_club = Club.new(club)
-    if new_club.save
-      @success_club << new_club
-    else
-      @fail_club << new_club
-    end
-
-    new_club
-  end
-
-  def add_runner(hash, category_id = nil)
-    runner_id = Runner.find_by(hash.slice('name', 'surname'))
-
-    return runner_id if runner_id
-
-    new_runner = Runner.new(hash)
-
-    if new_runner.save
-      @success_runner << new_runner
-
-      if category_id && category_id != default_category.id
-        add_result({
-                     runner_id: new_runner.id,
-                     competition_id: default_competition.id,
-                     category_id: category_id
-                   })
-      end
-    else
-      @fail_runner << new_runner
-    end
-
-    new_runner
-  end
-
-  def add_result(hash)
-    return if Result.find_by(hash.slice(:runner_id, :competition_id))
-
-    new_result = Result.new(hash)
-
-    if new_result.save
-      @success_result << new_result
-    else
-      @fail_result << new_result
-    end
-  end
-
-  def get_data_hash(data_hash, string)
-    crit = case string
-           when 'place' then /crt|Nr/
-           when 'name' then /Nume(,|) prenume/i
-           when 'result' then /Result|Rezultat/
-           when 'club' then /Echipa/
-           when 'category' then /Cat(eg. îndepl|)\./
-           when 'current_category' then /Categ. sport./
-           end
-
-    data_hash[data_hash.keys.detect { |key| key[crit] }]
-  end
-
-  def detect_category(hash)
-    return default_category unless hash.values.first
-
-    hash.values.first.gsub!('І', 'I')
-    Category.find_by(hash) || default_category
   end
 
   def table_array(html)

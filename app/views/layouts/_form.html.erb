@@ -14,7 +14,6 @@
 <% end %>
 <% elements.each do |el| %>
             <%= render partial: '/layouts/form_fields', :locals => { el: el, form: form } %>
-        </tr>
 <% end %>
 <hr>
 <% if defined?(results_exta) %>
@@ -26,7 +25,6 @@
     <h2>Add Result Information</h2>
 <% results_exta.each do |el| %>
  <%= render partial: '/layouts/form_fields', :locals => { el: el, form: form, selector: ""} %>
-        </tr>
 <% end %>
 </div>
 <% end %>
@@ -39,7 +37,6 @@
     <h2>Add Competition Information</h2>
 <% competition_extra.each do |el| %>
  <%= render partial: '/layouts/form_fields', :locals => { el: el, form: form } %>
-        </tr>
 <% end %>
 </div>
 <% end %>

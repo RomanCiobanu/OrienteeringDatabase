@@ -3,10 +3,10 @@ class RunnersController < ApplicationController
 
   # GET /runners or /runners.json
   def index
-    all_runners = Runner.all
+    all_runners = Runner.select()
     all_runners.all.each do |runner|
       category = get_category(runner)
-      runner.category_id = category.id
+      runner.update(category: category) if runner.category != category
       runner.save
     end
     @runners =
@@ -32,6 +32,7 @@ class RunnersController < ApplicationController
     @clubs = Club.all
     @categories = Category.all
     @competitions = Competition.all
+    @groups = Group.all
   end
 
   # GET /runners/1/edit
@@ -50,13 +51,13 @@ class RunnersController < ApplicationController
                          })
     @runner.save
 
-    unless params[:category_id].to_i == 11
+    unless params[:category_id].to_i == default_category.id
       result = Result.new(
         {
           place: params[:place],
           time: params[:hours].to_i * 3600 + params[:minutes].to_i * 60 + params[:seconds].to_i,
           category_id: params[:category_id],
-          competition_id: competition_id(params),
+          group_id: group_id(params, competition_id(params)),
           runner_id: @runner.id
         }
       )
@@ -119,28 +120,8 @@ class RunnersController < ApplicationController
   def runner_params
     params.require(:runner).permit(
       :name, :surname, :gender, :dob, :category_id, :club_id, :competition_name, :date,
-      :location, :country, :group, :distance_type, :rang, :place, :hours, :minutes, :seconds,
+      :location, :country, :groups, :distance_type, :rang, :place, :hours, :minutes, :seconds,
       :competition_id
     )
-  end
-
-  def competition_id(params)
-    return params[:competition_id] unless params[:competition_id] == 'New'
-
-    return default_competition.id if params[:competition_name].blank?
-
-    competition = Competition.new(
-      {
-        name: params[:competition_name],
-        date: params[:date],
-        location: params[:location],
-        country: params[:country],
-        group: params[:group],
-        distance_type: params[:distance_type]
-      }
-    )
-    competition.save
-
-    competition.id
   end
 end
