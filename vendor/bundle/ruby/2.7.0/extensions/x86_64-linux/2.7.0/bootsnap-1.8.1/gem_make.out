@@ -1,0 +1,15 @@
+current directory: /home/roma/Desktop/rails/OrienteeringDatabase/vendor/bundle/ruby/2.7.0/gems/bootsnap-1.8.1/ext/bootsnap
+/home/roma/.rvm/rubies/ruby-2.7.0/bin/ruby -I /home/roma/.rvm/rubies/ruby-2.7.0/lib/ruby/2.7.0 -r ./siteconf20220101-56363-11y11t5.rb extconf.rb
+creating Makefile
+
+current directory: /home/roma/Desktop/rails/OrienteeringDatabase/vendor/bundle/ruby/2.7.0/gems/bootsnap-1.8.1/ext/bootsnap
+make "DESTDIR=" clean
+
+current directory: /home/roma/Desktop/rails/OrienteeringDatabase/vendor/bundle/ruby/2.7.0/gems/bootsnap-1.8.1/ext/bootsnap
+make "DESTDIR="
+compiling bootsnap.c
+linking shared-object bootsnap/bootsnap.so
+
+current directory: /home/roma/Desktop/rails/OrienteeringDatabase/vendor/bundle/ruby/2.7.0/gems/bootsnap-1.8.1/ext/bootsnap
+make "DESTDIR=" install
+/usr/bin/install -c -m 0755 bootsnap.so ./.gem.20220101-56363-ccdl6j/bootsnap

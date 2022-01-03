@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_10_12_175859) do
+ActiveRecord::Schema.define(version: 2021_10_14_184541) do
 
   create_table "categories", force: :cascade do |t|
     t.string "name"
@@ -34,25 +34,32 @@ ActiveRecord::Schema.define(version: 2021_10_12_175859) do
     t.string "name"
     t.date "date"
     t.string "location"
-    t.string "country"
-    t.string "group"
+    t.string "country", default: "Moldova"
     t.string "distance_type"
-    t.float "rang"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "groups", force: :cascade do |t|
+    t.string "name"
     t.string "clasa"
+    t.float "rang"
+    t.integer "competition_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["competition_id"], name: "index_groups_on_competition_id"
   end
 
   create_table "results", force: :cascade do |t|
     t.integer "place"
     t.integer "runner_id"
     t.integer "time", default: 0
-    t.integer "category_id"
-    t.integer "competition_id"
+    t.integer "category_id", default: 0
+    t.integer "group_id", default: 0
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["category_id"], name: "index_results_on_category_id"
-    t.index ["competition_id"], name: "index_results_on_competition_id"
+    t.index ["group_id"], name: "index_results_on_group_id"
     t.index ["runner_id"], name: "index_results_on_runner_id"
   end
 
@@ -61,7 +68,7 @@ ActiveRecord::Schema.define(version: 2021_10_12_175859) do
     t.string "surname"
     t.date "dob"
     t.integer "category_id", default: 10
-    t.integer "club_id", default: 1
+    t.integer "club_id", default: 0
     t.string "gender"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false

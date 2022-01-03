@@ -1,7 +1,13 @@
 <h1 style="text-align:center; color:green">Results</h1>
 
 
-<% fields = [@result, "place", "runner_call_name", "time_edit", "category_call_name", "competition_call_name"]
+<% fields = [
+  @result,
+  "place",
+  "runner_call_name",
+  "time_edit",
+  "category_call_name",
+  "competition_call_name"]
 results = [@result] %>
 <%= render partial: '/layouts/index', :locals => { :columns => fields, :categories => results  } %>
 <%= render partial: '/layouts/show_actions', :locals => { :element => fields.first} %>

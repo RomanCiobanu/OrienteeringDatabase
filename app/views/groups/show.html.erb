@@ -1,0 +1,18 @@
+
+<% fields = [
+  @group,
+  ["name"],
+  [["competition", "name", "link"], ["date", "competition", "el_date"]],
+  ["clasa", "rang"],
+]
+
+%>
+
+
+<%= render partial: '/layouts/show', :locals => { :elements => fields} %>
+<td><%= link_to 'Count', rang_path(@group) , class: "btn btn-warning btn-sm"%></td>
+
+
+<br>
+<%= render partial: '/layouts/index'%>
+<%= render partial: '/layouts/show_actions', :locals => { :element => fields.first} %>

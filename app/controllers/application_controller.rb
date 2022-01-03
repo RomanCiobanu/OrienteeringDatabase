@@ -1,4 +1,5 @@
 class ApplicationController < ActionController::Base
+  include ApplicationHelper
   helper_method :default_competition
 
   def runners_index_array(runners)
@@ -22,7 +23,8 @@ class ApplicationController < ActionController::Base
         ['runner', 'runners.name', "#{result.runner.name} #{result.runner. surname}", result.runner, 'link'],
         ['Time', 'time', Time.at(result.time).utc.strftime('%H:%M:%S')],
         ['Category', 'categories.id', result.category.name],
-        ['competition', 'competitions.name', result.competition.name, result.competition, 'link']
+        ['group', 'groups.name', result.group.name, result.group, 'link'],
+        ['competition', 'groups.competitions.name', "#{result.group.competition.name} #{result.group.competition.distance_type}" , result.group.competition, 'link']
       ]
     end
   end
@@ -35,10 +37,7 @@ class ApplicationController < ActionController::Base
         ['Date', 'date', competition.date],
         ['Location', 'location', competition.location],
         ['Country', 'country', competition.country],
-        ['Group', 'group', competition.group],
-        ['Distance Type', 'distance_type', competition.distance_type],
-        ['Rang', 'rang', competition.rang],
-        ['Class', 'clasa', competition.clasa]
+        ['Distance Type', 'distance_type', competition.distance_type]
       ]
     end
   end
@@ -57,11 +56,24 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def group_index_array(groups)
+    groups.map do |group|
+      [
+        group,
+        ['Name', 'name', group.name],
+        ['Clasa', 'clasa', group.clasa],
+        ['Rang', 'rang', group.rang],
+        ['competition', 'competitions.name', "#{group.competition.name} #{group.competition.distance_type}", group.competition, 'link'],
+        ['Date', 'competitions.date', group.competition.date],
+      ]
+    end
+  end
+
   def get_category(runner, date = Time.now)
     return default_category if runner.results.blank?
 
-    Category.find(runner.results.select { |result| ((date - 2.years)..date).cover?(result.competition.date) }
-      .map(&:category_id).uniq.min) rescue default_category
+    runner.results.select { |result| ((date - 2.years)..date).cover?(result.group.competition.date) }
+      .map(&:category).uniq.sort_by(&:id).min rescue default_category
   end
 
   def sort_table(elements)
@@ -89,7 +101,11 @@ class ApplicationController < ActionController::Base
     Club.find(1)
   end
 
-  def get_competition_rang(competition)
-    competition.results.sort_by(&:place).first(12).map { |result| get_category(result.runner, competition.date - 1.day).points }.sum
+  def default_group
+    Group.find(0)
+  end
+
+  def get_group_rang(group)
+    group.results.sort_by(&:place).first(12).map { |result| get_category(result.runner, group.competition.date - 1.day).points }.sum
   end
 end

@@ -1,0 +1,15 @@
+current directory: /home/roma/Desktop/rails/OrienteeringDatabase/vendor/bundle/ruby/2.7.0/gems/websocket-driver-0.7.5/ext/websocket-driver
+/home/roma/.rvm/rubies/ruby-2.7.0/bin/ruby -I /home/roma/.rvm/rubies/ruby-2.7.0/lib/ruby/2.7.0 -r ./siteconf20220101-56363-1w1z3jc.rb extconf.rb
+creating Makefile
+
+current directory: /home/roma/Desktop/rails/OrienteeringDatabase/vendor/bundle/ruby/2.7.0/gems/websocket-driver-0.7.5/ext/websocket-driver
+make "DESTDIR=" clean
+
+current directory: /home/roma/Desktop/rails/OrienteeringDatabase/vendor/bundle/ruby/2.7.0/gems/websocket-driver-0.7.5/ext/websocket-driver
+make "DESTDIR="
+compiling websocket_mask.c
+linking shared-object websocket_mask.so
+
+current directory: /home/roma/Desktop/rails/OrienteeringDatabase/vendor/bundle/ruby/2.7.0/gems/websocket-driver-0.7.5/ext/websocket-driver
+make "DESTDIR=" install
+/usr/bin/install -c -m 0755 websocket_mask.so ./.gem.20220101-56363-1uke3a7

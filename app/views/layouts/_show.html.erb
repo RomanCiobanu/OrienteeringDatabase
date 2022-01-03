@@ -13,6 +13,9 @@
    <%  case el.last
     when "name" %>
         <%= element.method(el.first).call.name%>
+     <% when "el_date" %>
+        <%= element.method(el.second).call.date%>
+
      <% when "link" %>
         <%= link_to element.method(el.first).call.method(el[1]).call, method("#{el.first}_path").call(element.method(el.first).call) %>
      <% else %>

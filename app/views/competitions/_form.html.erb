@@ -3,9 +3,6 @@
   ["date", [], "date"],
   ["location", "text"],
   ["country", "text"],
-  ["group", "text"],
   ["distance_type", "text"],
-  ["clasa", ["MSRM", "CMSRM", "Seniori", "Juniori"], "select"],
-  ["rang", "text"]
 ] %>
 <%= render partial: '/layouts/form', :locals => { :elements => fields, :model => competition} %>

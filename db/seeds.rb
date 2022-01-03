@@ -11,5 +11,7 @@ categories.each do |category|
   Category.create(category)
 end
 
-Competition.create("id": 0,"name": "Fara Competitie","date": "2021-08-01")
-Club.create("id": 1,"name": "Individual")
+Competition.create("id": 0,"name": "No Competition","date": "2021-08-01")
+Club.create("id": 0, "name": "Individual")
+User.create("email": "roma.ciobanu@gmail.com", "password": "Sport5Roma" )
+Group.create("id": 0, "name": "No Group", "competition_id": 0)

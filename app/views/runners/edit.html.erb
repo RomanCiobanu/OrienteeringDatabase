@@ -1,7 +1,16 @@
 <% if user_signed_in? %>
 <h1>Editing Runner</h1>
 
-<%= render 'form', runner: @runner %>
+<% fields = [
+    ["name", "text"],
+    ["surname", "text"],
+    ["gender", ["M", "W"], "select"],
+    ["dob", [Date.today.year, Date.today.year - 80], "date"],
+    ["club", @clubs, ["name"], "id"]
+  ]%>
+
+<%= render partial: '/layouts/form', :locals => { elements: fields, model: @runner} %>
+
 <br/>
 
 <%= link_to 'Show', @runner, class: "btn btn-warning btn-sm"%>

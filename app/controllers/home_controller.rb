@@ -1,5 +1,6 @@
 class HomeController < ApplicationController
   include HomeHelper
+  include ApplicationHelper
 
   def index
     @clubs_count        = Club.count
@@ -80,20 +81,21 @@ class HomeController < ApplicationController
   end
 
   def count_rang
-    competition      = Competition.find(params[:format])
-    competition.rang = get_competition_rang(competition)
-    competition.save
-    competition_results = competition.results.sort_by(&:place)
-    hash        = get_rang_percents(competition.rang)
-    winner_time = competition_results.first.time
+    group      = Group.find(params[:format])
+    group.rang = get_group_rang(group)
+    group.save
+    group_competition_date = group.competition.date
+    group_results = group.results.sort_by(&:place)
+    hash        = get_rang_percents(group.rang)
+    winner_time = group_results.first.time
     time_hash   = hash.map { |k,v| [k, v*winner_time/100] }.to_h
-    time_hash = case competition.clasa
+    time_hash = case group.clasa
     when "MSRM", "CMSRM" then time_hash.slice(:"3", :"4", :"5", :"6")
     when "Seniori" then time_hash.slice(:"4", :"5", :"6")
     when "Juniori" then time_hash.slice(:"7", :"8", :"9")
     end
 
-    competition_results.each do |result|
+    group_results.each do |result|
       time     = result.time
       category = time_hash.detect  { |k,v| v >= time }
       result.category_id = category ? category.first.to_s.to_i : default_category
@@ -102,12 +104,12 @@ class HomeController < ApplicationController
     end
 
 
-    if ["CMSRM", "MSRM"].include?(competition.clasa) && competition.rang >=120 &&
-      competition_results.select {|result| get_category(result.runner, competition.date - 1.day).id <= 3}.size > 2
-      results         = competition_results.first(3)
+    if ["CMSRM", "MSRM"].include?(group.clasa) && group.rang >=120 &&
+      group_results.select {|result| get_category(result.runner, group_competition_date - 1.day).id <= 3}.size > 2
+      results         = group_results.first(3)
       res             = results.first
-      res.category_id = if competition.clasa == "MSRM" &&
-        competition_results.select {|result| get_category(result.runner, competition.date - 1.day).id <= 2}.size > 2
+      res.category_id = if group.clasa == "MSRM" &&
+        group_results.select {|result| get_category(result.runner, group_competition_date - 1.day).id <= 2}.size > 2
         2
       else
         3
@@ -120,12 +122,12 @@ class HomeController < ApplicationController
         res.save
       end
     else
-      competition_results.select {|result| get_category(result.runner, competition.date - 1.day).id <= 3}.each do |res|
+      group_results.select {|result| get_category(result.runner, group_competition_date - 1.day).id <= 3}.each do |res|
         res.category_id = 4
         res.save
       end
     end
 
-    redirect_to competition_path(competition)
+    redirect_to group_path(group)
   end
 end

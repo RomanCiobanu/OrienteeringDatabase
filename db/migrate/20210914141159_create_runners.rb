@@ -4,9 +4,9 @@ class CreateRunners < ActiveRecord::Migration[6.1]
       t.string :name
       t.string :surname
       t.date :dob
-      t.references :category, default: 11
-      t.references :club, default: 1
-      t.string :gender
+      t.references :category, default: 10
+      t.references :club, default: 0
+      t.string :gender￼
 
       t.timestamps
     end
